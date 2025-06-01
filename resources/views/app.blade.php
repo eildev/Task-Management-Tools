@@ -1,22 +1,52 @@
 <!DOCTYPE html>
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
-    <head>
-        <meta charset="utf-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1">
 
-        <title inertia>{{ config('app.name', 'Laravel') }}</title>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0" />
 
-        <!-- Fonts -->
-        <link rel="preconnect" href="https://fonts.bunny.net">
-        <link href="https://fonts.bunny.net/css?family=figtree:400,500,600&display=swap" rel="stylesheet" />
+    <link rel="icon" type="image/png" href="{{ asset('assets/images/favicon.png') }}" sizes="16x16">
+    <!-- remix icon font css  -->
+    <link rel="stylesheet" href="{{ asset('assets/css/remixicon.css') }}">
+    <!-- BootStrap css -->
+    <link rel="stylesheet" href="{{ asset('assets/css/lib/bootstrap.min.css') }}">
+    <!-- Apex Chart css -->
+    <link rel="stylesheet" href="{{ asset('assets/css/lib/apexcharts.css') }}">
+    <!-- Data Table css -->
+    <link rel="stylesheet" href="{{ asset('assets/css/lib/dataTables.min.css') }}">
+    <!-- Text Editor css -->
+    <link rel="stylesheet" href="{{ asset('assets/css/lib/editor-katex.min.css') }}">
+    <link rel="stylesheet" href="{{ asset('assets/css/lib/editor.atom-one-dark.min.css') }}">
+    <link rel="stylesheet" href="{{ asset('assets/css/lib/editor.quill.snow.css') }}">
+    <!-- Date picker css -->
+    <link rel="stylesheet" href="{{ asset('assets/css/lib/flatpickr.min.css') }}">
+    <!-- Calendar css -->
+    <link rel="stylesheet" href="{{ asset('assets/css/lib/full-calendar.css') }}">
+    <!-- Vector Map css -->
+    <link rel="stylesheet" href="{{ asset('assets/css/lib/jquery-jvectormap-2.0.5.css') }}">
+    <!-- Popup css -->
+    <link rel="stylesheet" href="{{ asset('assets/css/lib/magnific-popup.css') }}">
+    <!-- Slick Slider css -->
+    <link rel="stylesheet" href="{{ asset('assets/css/lib/slick.css') }}">
+    <!-- prism css -->
+    <link rel="stylesheet" href="{{ asset('assets/css/lib/prism.css') }}">
+    <!-- file upload css -->
+    <link rel="stylesheet" href="{{ asset('assets/css/lib/file-upload.css') }}">
 
-        <!-- Scripts -->
-        @routes
-        @viteReactRefresh
-        @vite(['resources/js/app.jsx', "resources/js/Pages/{$page['component']}.jsx"])
-        @inertiaHead
-    </head>
-    <body class="font-sans antialiased">
-        @inertia
-    </body>
+    <link rel="stylesheet" href="{{ asset('assets/css/lib/audioplayer.css') }}">
+    <link rel="stylesheet" href="{{ asset('assets/css/lib/animate.min.css') }}">
+    <!-- main css -->
+    <link rel="stylesheet" href="{{ asset('assets/css/style.css') }}">
+    <link rel="stylesheet" href="{{ asset('assets/css/extra.css') }}">
+
+    <title inertia>{{ config('app.name', 'Laravel') }}</title>
+    @viteReactRefresh
+    @vite(['resources/js/app.jsx', "resources/js/Pages/{$page['component']}.jsx"])
+    @inertiaHead
+</head>
+
+<body>
+    @inertia
+</body>
+
 </html>

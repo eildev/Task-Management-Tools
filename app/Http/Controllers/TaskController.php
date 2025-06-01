@@ -18,7 +18,8 @@ class TaskController extends Controller
        return Inertia::render('Tasks/Index',['tasks' => $tasks]);
     }
 
-    public function create(){
+    public function create()
+    {
         return Inertia::render('Tasks/Create');
     }
 
@@ -47,7 +48,7 @@ class TaskController extends Controller
             $filename = time() . '_' . $file->Extension();
             $path = 'attachments/tasks/';
             $file->move(public_path($path), $filename);
-            $task->attachment = $path.$filename;
+            $task->attachment = $path . $filename;
         }
         if($request->priority){
             $task->priority = $request->priority;
@@ -56,19 +57,21 @@ class TaskController extends Controller
          $task->created_by = FacadesAuth::user()->id;
         $task->save();
 
-       return response()->json([
+        return response()->json([
             'success' => true,
             'message' => 'Task created successfully!',
             'task' => $task,
         ]);
     }
 
-    public function edit($id){
+    public function edit($id)
+    {
         $task = Task::find($id);
-        return Inertia::render('Tasks/Edit',['task' => $task]);
+        return Inertia::render('Tasks/Edit', ['task' => $task]);
     }
 
-    public function update(Request $request, $id){
+    public function update(Request $request, $id)
+    {
         $validated = $request->validate([
            'name' => 'required|string|max:255',
             'description' => 'required|string|max:1000',
@@ -103,7 +106,7 @@ class TaskController extends Controller
             $filename = time() . '_' . $file->Extension();
             $path = 'attachments/tasks/';
             $file->move(public_path($path), $filename);
-            $task->attachment = $path.$filename;
+            $task->attachment = $path . $filename;
         }
         $task->save();
         return response()->json([
@@ -111,10 +114,10 @@ class TaskController extends Controller
             'message' => 'Task updated successfully!',
             'task' => $task,
         ]);
-
     }
 
-    public function destroy($id){
+    public function destroy($id)
+    {
         $task = Task::find($id);
         $task->delete();
         return response()->json([
@@ -123,9 +126,10 @@ class TaskController extends Controller
         ]);
     }
 
-    public function show($id){
+    public function show($id)
+    {
         $task = Task::find($id);
-        return Inertia::render('Tasks/Show',['task' => $task]);
+        return Inertia::render('Tasks/Show', ['task' => $task]);
     }
 
  public function status_change($id,Request $request){
