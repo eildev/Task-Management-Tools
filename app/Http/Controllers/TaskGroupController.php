@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\TaskGroup;
 use Inertia\Inertia;
+use Auth;
 class TaskGroupController extends Controller
 {
     public function index(){
@@ -25,7 +26,12 @@ class TaskGroupController extends Controller
         $taskGroup = new TaskGroup();
         $taskGroup->name = $request->name;
         $taskGroup->type = $request->type;
-            $taskGroup->description = $request->description;
+        $taskGroup->description = $request->description;
+        if($request->start_date || $request->end_date){
+            $taskGroup->start_date = $request->start_date;
+            $taskGroup->end_date = $request->end_date;
+        }
+        $taskGroup->created_by =Auth::user()->id;
         if($request->hasFile('image')){
             $image= $request->file('image');
             $imageName = time().'.'.$image->Extension();
@@ -58,6 +64,9 @@ class TaskGroupController extends Controller
         $taskGroup->name = $request->name;
         $taskGroup->type = $request->type;
         $taskGroup->description = $request->description;
+        $taskGroup->start_date = $request->start_date;
+        $taskGroup->end_date = $request->end_date;
+        $taskGroup->updated_by =Auth::user()->id;
         if($request->hasFile('image')){
             if($taskGroup->image && file_exists(public_path($taskGroup->image))){
                 unlink(public_path($taskGroup->image));
@@ -94,5 +103,7 @@ class TaskGroupController extends Controller
                 'taskGroup' => $taskGroup,
             ]);
     }
+
+
 
 }

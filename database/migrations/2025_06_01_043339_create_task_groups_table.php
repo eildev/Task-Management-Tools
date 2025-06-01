@@ -15,8 +15,14 @@ return new class extends Migration
             $table->id();
             $table->string('name');
             $table->string('description')->nullable();
-            $table->enum('type',['module','submodule','feature']);
+            $table->date('start_date')->nullable();
+            $table->date('end_date')->nullable();
+            $table->enum('type',['module','submodule','feature','project', 'others']);
+            $table->unsignedBigInteger('created_by')->unsigned();
+            $table->unsignedBigInteger('updated_by')->unsigned()->nullable();
             $table->string('image')->nullable();
+            $table->foreign('created_by')->references('id')->on('users')->onDelete('cascade');
+            $table->foreign('updated_by')->references('id')->on('users')->onDelete('cascade');
             $table->timestamps();
         });
     }
