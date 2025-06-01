@@ -17,8 +17,8 @@ return new class extends Migration
             $table->string('description');
             $table->string('attachment')->nullable();
             $table->string('assign_date');
-            $table->string('assign_by');
-            $table->string('assign_to');
+            $table->unsignedBigInteger('assign_by')->unsigned();
+            $table->unsignedBigInteger('assign_to')->unsigned();
             $table->string('time_line');
             $table->enum('status',['pending','inprogress','completed','cancelled','hold','rejected','approved','issues'])->default('pending');
             $table->unsignedBigInteger('module_id')->nullable();
@@ -30,6 +30,8 @@ return new class extends Migration
             $table->foreign('module_id')->references('id')->on('task_groups')->onDelete('cascade');
             $table->foreign('submodule_id')->references('id')->on('task_groups')->onDelete('cascade');
             $table->foreign('feature_id')->references('id')->on('task_groups')->onDelete('cascade');
+            $table->foreign('assign_by')->references('id')->on('users')->onDelete('cascade');
+            $table->foreign('assign_to')->references('id')->on('users')->onDelete('cascade');
 
             $table->timestamps();
         });
