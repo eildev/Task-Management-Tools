@@ -144,7 +144,7 @@ const MasterLayout = ({ children }) => {
                             <ul className="sidebar-submenu">
                                 <li>
                                     <Link
-                                        to="/tasks"
+                                        to="/task"
                                         className={({ isActive }) =>
                                             isActive ? "active-page" : ""
                                         }

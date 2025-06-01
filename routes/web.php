@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\ProfileController;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
@@ -18,12 +19,14 @@ use App\Http\Controllers\TaskController;
 //     ]);
 // });
 
-Route::get('/', function () {
-    return Inertia::render('Home');
+// Route::get('/', function () {
+//     return Inertia::render('Home');
+// });
+
+Route::get('/', [DashboardController::class, 'index']);
+Route::get('/task', function () {
+    return Inertia::render('Task');
 });
-
-
-
 
 Route::middleware('auth')->group(function () {
 
