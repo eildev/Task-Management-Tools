@@ -8,7 +8,7 @@ use Inertia\Inertia;
 
 use App\Http\Controllers\TaskGroupController;
 use App\Http\Controllers\TaskController;
-
+use App\Http\Controllers\SprintController;
 
 // Route::get('/', function () {
 //     return Inertia::render('Welcome', [
@@ -30,24 +30,35 @@ Route::get('/task', function () {
 
 Route::middleware('auth')->group(function () {
 
-    Route::controller(TaskController::class)->group(function () {
-        Route::get('/tasks', 'index')->name('tasks.index');
-        Route::get('/tasks/create', 'create')->name('tasks.create');
-        Route::post('/tasks', 'store')->name('tasks.store');
-        Route::get('/tasks/{task}', 'show')->name('tasks.show');
-        Route::get('/tasks/{task}/edit', 'edit')->name('tasks.edit');
-        Route::put('/tasks/{task}', 'update')->name('tasks.update');
-        Route::delete('/tasks/{task}', 'destroy')->name('tasks.destroy');
-    });
-    Route::controller(TaskGroupController::class)->group(function () {
-        Route::get('/task-groups', 'index')->name('task-groups.index');
-        Route::get('/task-groups/create', 'create')->name('task-groups.create');
-        Route::post('/task-groups', 'store')->name('task-groups.store');
-        Route::get('/task-groups/{taskGroup}', 'show')->name('task-groups.show');
-        Route::get('/task-groups/{taskGroup}/edit', 'edit')->name('task-groups.edit');
-        Route::put('/task-groups/{taskGroup}', 'update')->name('task-groups.update');
-        Route::delete('/task-groups/{taskGroup}', 'destroy')->name('task-groups.destroy');
-    });
+        Route::controller(TaskController::class)->group(function () {
+            Route::get('/tasks', 'index')->name('tasks.index');
+            Route::get('/tasks/create', 'create')->name('tasks.create');
+            Route::post('/tasks', 'store')->name('tasks.store');
+            Route::get('/tasks/{task}', 'show')->name('tasks.show');
+            Route::get('/tasks/{task}/edit', 'edit')->name('tasks.edit');
+            Route::put('/tasks/{task}', 'update')->name('tasks.update');
+            Route::delete('/tasks/{task}', 'destroy')->name('tasks.destroy');
+            Route::get('/tasks/{task}', 'status_change')->name('tasks.status_change');
+        });
+        Route::controller(TaskGroupController::class)->group(function () {
+            Route::get('/task-groups', 'index')->name('task-groups.index');
+            Route::get('/task-groups/create', 'create')->name('task-groups.create');
+            Route::post('/task-groups', 'store')->name('task-groups.store');
+            Route::get('/task-groups/{taskGroup}', 'show')->name('task-groups.show');
+            Route::get('/task-groups/{taskGroup}/edit', 'edit')->name('task-groups.edit');
+            Route::put('/task-groups/{taskGroup}', 'update')->name('task-groups.update');
+            Route::delete('/task-groups/{taskGroup}', 'destroy')->name('task-groups.destroy');
+        });
+
+        Route::controller(SprintController::class)->group(function () {
+            Route::get('/sprints', 'index')->name('sprints.index');
+            Route::get('/sprints/create', 'create')->name('sprints.create');
+            Route::post('/sprints', 'store')->name('sprints.store');
+            Route::get('/sprints/{sprint}', 'show')->name('sprints.show');
+            Route::get('/sprints/{sprint}/edit', 'edit')->name('sprints.edit');
+            Route::put('/sprints/{sprint}', 'update')->name('sprints.update');
+            Route::delete('/sprints/{sprint}', 'destroy')->name('sprints.destroy');
+        });
 });
 
 

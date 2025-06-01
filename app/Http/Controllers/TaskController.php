@@ -12,10 +12,10 @@ use App\Models\user;
 
 class TaskController extends Controller
 {
-    public function index()
-    {
-        $tasks = Task::all();
-        return Inertia::render('Tasks/Index', ['tasks' => $tasks]);
+    public function index(){
+
+       $tasks = Task::all();
+       return Inertia::render('Tasks/Index',['tasks' => $tasks]);
     }
 
     public function create()
@@ -29,12 +29,13 @@ class TaskController extends Controller
             'name' => 'required|string|max:255',
             'description' => 'required|string|max:1000',
             'attachment' => 'nullable|file|mimes:jpg,jpeg,png,pdf,doc,docx,xlsx,xls|max:2048',
-            'assign_date' => 'required|date',
+            'assign_date' => 'nullable|date',
 
-            'assign_to' => 'required|string|max:255',
-            'time_line' => 'required|string|max:255',
+            'assign_to' => 'nullable|string|max:255',
+            'deadline' => 'nullable|date',
             'status' => 'required|in:pending,inprogress,completed,cancelled,hold,rejected,approved,issues',
-            'module_id' => 'nullable|exists:task_groups,id',
+            'project_id' => 'required|exists:task_groups,id',
+            'module_id' => 'required|exists:task_groups,id',
             'submodule_id' => 'nullable|exists:task_groups,id',
             'feature_id' => 'nullable|exists:task_groups,id',
             'completetion_date' => 'nullable|date',
@@ -49,7 +50,11 @@ class TaskController extends Controller
             $file->move(public_path($path), $filename);
             $task->attachment = $path . $filename;
         }
-        $task->assign_by = FacadesAuth::user()->id;
+        if($request->priority){
+            $task->priority = $request->priority;
+        }
+         $task->assign_by = FacadesAuth::user()->id;
+         $task->created_by = FacadesAuth::user()->id;
         $task->save();
 
         return response()->json([
@@ -68,32 +73,35 @@ class TaskController extends Controller
     public function update(Request $request, $id)
     {
         $validated = $request->validate([
-            'name' => 'required|string|max:255',
+           'name' => 'required|string|max:255',
             'description' => 'required|string|max:1000',
             'attachment' => 'nullable|file|mimes:jpg,jpeg,png,pdf,doc,docx,xlsx,xls|max:2048',
-            'assign_date' => 'required|date',
-            'assign_by' => 'required|string|max:255',
-            'assign_to' => 'required|string|max:255',
-            'time_line' => 'required|string|max:255',
+            'assign_date' => 'nullable|date',
+
+            'assign_to' => 'nullable|string|max:255',
+            'deadline' => 'nullable|date',
             'status' => 'required|in:pending,inprogress,completed,cancelled,hold,rejected,approved,issues',
-            'module_id' => 'nullable|exists:task_groups,id',
+            'project_id' => 'required|exists:task_groups,id',
+            'module_id' => 'required|exists:task_groups,id',
             'submodule_id' => 'nullable|exists:task_groups,id',
             'feature_id' => 'nullable|exists:task_groups,id',
             'completetion_date' => 'nullable|date',
         ]);
-        $task = Task::find($id);
-        $task->name = $request->name;
-        $task->description = $request->description;
-        $task->assign_date = $request->assign_date;
-        $task->assign_by = FacadesAuth::user()->id;
-        $task->assign_to = $request->assign_to;
-        $task->time_line = $request->time_line;
-        $task->status = $request->status;
-        $task->module_id = $request->module_id;
-        $task->submodule_id = $request->submodule_id;
-        $task->feature_id = $request->feature_id;
-        $task->completetion_date = $request->completetion_date;
-        if ($request->hasFile('attachment')) {
+          $task = Task::find($id);
+          $task->name = $request->name;
+          $task->description = $request->description;
+          $task->assign_date = $request->assign_date;
+          $task->assign_by = FacadesAuth::user()->id;
+          $task->assign_to = $request->assign_to;
+          $task->deadline = $request->deadline;
+          $task->status = $request->status;
+          $task->module_id = $request->module_id;
+          $task->submodule_id = $request->submodule_id;
+          $task->feature_id = $request->feature_id;
+          $task->priority = $request->priority;
+          $task->completetion_date = $request->completetion_date;
+          $task->updated_by = FacadesAuth::user()->id;
+          if ($request->hasFile('attachment')) {
             $file = $request->file('attachment');
             $filename = time() . '_' . $file->Extension();
             $path = 'attachments/tasks/';
@@ -123,4 +131,15 @@ class TaskController extends Controller
         $task = Task::find($id);
         return Inertia::render('Tasks/Show', ['task' => $task]);
     }
+
+ public function status_change($id,Request $request){
+        $task = Task::find($id);
+        $task->status =$request->status;
+        $task->save();
+       return Inertia::render('Tasks/Index',['taskGroup' => $task]);
+    }
+
+
+
+
 }
