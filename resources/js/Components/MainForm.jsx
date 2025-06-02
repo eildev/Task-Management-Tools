@@ -8,12 +8,12 @@ const MainForm = () => {
                 <div className="card-body">
                     <div className="row gy-3">
                         <div className="col-md-4">
-                            <label className="form-label">Input Small</label>
+                            <label className="form-label">Task Name</label>
                             <input
                                 type="text"
-                                name="#0"
+                                name="name"
                                 className="form-control form-control-sm"
-                                placeholder="info@gmail.com"
+                                placeholder="Enter Task Name"
                             />
                         </div>
                     </div>
