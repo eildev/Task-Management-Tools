@@ -9,6 +9,8 @@ export default function Home({ data }) {
             <MasterLayout>
                 {/* <a href="/task">This is Task</a> */}
                 <Breadcrumb title="Dashboard" />
+
+                {/* Layout */}
                 <DashboardLayerOne />
             </MasterLayout>
         </>
