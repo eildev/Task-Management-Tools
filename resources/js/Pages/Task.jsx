@@ -1,5 +1,5 @@
 import Breadcrumb from "@/components/Breadcrumb";
-import KanbanLayer from "@/components/KanbanLayer";
+import MainForm from "@/components/MainForm";
 import MasterLayout from "@/layout/MasterLayout";
 
 const Task = () => {
@@ -10,8 +10,7 @@ const Task = () => {
                 {/* Breadcrumb */}
                 <Breadcrumb title="Task" />
 
-                {/* KanbanLayer */}
-                <KanbanLayer />
+                <MainForm />
             </MasterLayout>
         </>
     );

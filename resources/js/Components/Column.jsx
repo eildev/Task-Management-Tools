@@ -1,5 +1,6 @@
 import { Icon } from "@iconify/react";
 import TaskCard from "./TaskCard";
+import { Droppable } from "@hello-pangea/dnd";
 
 const Column = ({
     column,

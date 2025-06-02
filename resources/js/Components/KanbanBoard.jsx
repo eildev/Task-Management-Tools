@@ -1,6 +1,7 @@
 import { useState } from "react";
 import Column from "./Column";
 import AddEditTaskModal from "./AddEditTaskModal";
+import { DragDropContext } from "@hello-pangea/dnd";
 
 const initialData = {
     columns: {
