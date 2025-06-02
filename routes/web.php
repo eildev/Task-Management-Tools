@@ -9,7 +9,7 @@ use Inertia\Inertia;
 use App\Http\Controllers\TaskGroupController;
 use App\Http\Controllers\TaskController;
 use App\Http\Controllers\SprintController;
-
+use App\Http\Controllers\Auth\RegisteredUserController;
 // Route::get('/', function () {
 //     return Inertia::render('Welcome', [
 //         'canLogin' => Route::has('login'),
@@ -23,13 +23,27 @@ use App\Http\Controllers\SprintController;
 //     return Inertia::render('Home');
 // });
 
-Route::get('/', [DashboardController::class, 'index']);
-Route::get('/task', function () {
-    return Inertia::render('Task');
+
+// Route::get('/', [DashboardController::class, 'index']);
+// Route::get('/task', function () {
+//     return Inertia::render('Task');
+// });
+
+
+Route::get('/', function () {
+    return Inertia::render('Auth/Login', [
+        'canLogin' => Route::has('login'),
+        'canRegister' => Route::has('register'),
+        'laravelVersion' => Application::VERSION,
+        'phpVersion' => PHP_VERSION,
+    ]);
 });
 Route::get('/task-manage', function () {
     return Inertia::render('TaskManage');
 });
+
+
+
 
 Route::middleware('auth')->group(function () {
 

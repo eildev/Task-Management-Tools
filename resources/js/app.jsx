@@ -5,7 +5,7 @@ import { resolvePageComponent } from "laravel-vite-plugin/inertia-helpers";
 import "react-quill/dist/quill.snow.css";
 import "react-toastify/dist/ReactToastify.css";
 import "bootstrap/dist/js/bootstrap.bundle.min.js";
-
+import '../css/app.css';
 const appName = import.meta.env.VITE_APP_NAME || "Laravel";
 
 createInertiaApp({
