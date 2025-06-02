@@ -101,7 +101,7 @@ const MasterLayout = ({ children }) => {
                     <Icon icon="radix-icons:cross-2" />
                 </button>
                 <div>
-                    <Link to="/" className="sidebar-logo">
+                    <Link href="/" className="sidebar-logo">
                         <img
                             src="/assets/images/logo.png"
                             alt="site logo"
@@ -124,7 +124,7 @@ const MasterLayout = ({ children }) => {
                         <li className="sidebar-menu-group-title">Dashboard</li>
                         <li>
                             <Link
-                                to="/"
+                                href="/"
                                 className={({ isActive }) =>
                                     isActive ? "active-page" : ""
                                 }
@@ -134,7 +134,7 @@ const MasterLayout = ({ children }) => {
                             </Link>
                         </li>
                         <li className="dropdown">
-                            <Link to="#">
+                            <Link href="#">
                                 <Icon
                                     icon="solar:home-smile-angle-outline"
                                     className="menu-icon"
@@ -144,9 +144,9 @@ const MasterLayout = ({ children }) => {
                             <ul className="sidebar-submenu">
                                 <li>
                                     <Link
-                                        to="/task"
-                                        className={({ isActive }) =>
-                                            isActive ? "active-page" : ""
+                                        href="/task"
+                                        className={
+                                            url === "/task" ? "active-page" : ""
                                         }
                                     >
                                         <i className="ri-circle-fill circle-icon text-primary-600 w-auto" />
@@ -155,7 +155,7 @@ const MasterLayout = ({ children }) => {
                                 </li>
                                 <li>
                                     <Link
-                                        to="/manage-task"
+                                        href="/task-manage"
                                         className={({ isActive }) =>
                                             isActive ? "active-page" : ""
                                         }
@@ -456,7 +456,7 @@ const MasterLayout = ({ children }) => {
                                         </div>
                                         <div className="max-h-400-px overflow-y-auto scroll-sm pe-4">
                                             <Link
-                                                to="#"
+                                                href="#"
                                                 className="px-24 py-12 d-flex align-items-start gap-3 mb-2 justify-content-between"
                                             >
                                                 <div className="text-black hover-bg-transparent hover-text-primary d-flex align-items-center gap-3">
@@ -486,7 +486,7 @@ const MasterLayout = ({ children }) => {
                                                 </div>
                                             </Link>
                                             <Link
-                                                to="#"
+                                                href="#"
                                                 className="px-24 py-12 d-flex align-items-start gap-3 mb-2 justify-content-between"
                                             >
                                                 <div className="text-black hover-bg-transparent hover-text-primary d-flex align-items-center gap-3">
@@ -516,7 +516,7 @@ const MasterLayout = ({ children }) => {
                                                 </div>
                                             </Link>
                                             <Link
-                                                to="#"
+                                                href="#"
                                                 className="px-24 py-12 d-flex align-items-start gap-3 mb-2 justify-content-between bg-neutral-50"
                                             >
                                                 <div className="text-black hover-bg-transparent hover-text-primary d-flex align-items-center gap-3">
@@ -546,7 +546,7 @@ const MasterLayout = ({ children }) => {
                                                 </div>
                                             </Link>
                                             <Link
-                                                to="#"
+                                                href="#"
                                                 className="px-24 py-12 d-flex align-items-start gap-3 mb-2 justify-content-between bg-neutral-50"
                                             >
                                                 <div className="text-black hover-bg-transparent hover-text-primary d-flex align-items-center gap-3">
@@ -576,7 +576,7 @@ const MasterLayout = ({ children }) => {
                                                 </div>
                                             </Link>
                                             <Link
-                                                to="#"
+                                                href="#"
                                                 className="px-24 py-12 d-flex align-items-start gap-3 mb-2 justify-content-between"
                                             >
                                                 <div className="text-black hover-bg-transparent hover-text-primary d-flex align-items-center gap-3">
@@ -608,7 +608,7 @@ const MasterLayout = ({ children }) => {
                                         </div>
                                         <div className="text-center py-12 px-16">
                                             <Link
-                                                to="#"
+                                                href="#"
                                                 className="text-primary-600 fw-semibold text-md"
                                             >
                                                 See All Message
@@ -641,7 +641,7 @@ const MasterLayout = ({ children }) => {
                                         </div>
                                         <div className="max-h-400-px overflow-y-auto scroll-sm pe-4">
                                             <Link
-                                                to="#"
+                                                href="#"
                                                 className="px-24 py-12 d-flex align-items-start gap-3 mb-2 justify-content-between"
                                             >
                                                 <div className="text-black hover-bg-transparent hover-text-primary d-flex align-items-center gap-3">
@@ -668,7 +668,7 @@ const MasterLayout = ({ children }) => {
                                                 </span>
                                             </Link>
                                             <Link
-                                                to="#"
+                                                href="#"
                                                 className="px-24 py-12 d-flex align-items-start gap-3 mb-2 justify-content-between bg-neutral-50"
                                             >
                                                 <div className="text-black hover-bg-transparent hover-text-primary d-flex align-items-center gap-3">
@@ -693,7 +693,7 @@ const MasterLayout = ({ children }) => {
                                                 </span>
                                             </Link>
                                             <Link
-                                                to="#"
+                                                href="#"
                                                 className="px-24 py-12 d-flex align-items-start gap-3 mb-2 justify-content-between"
                                             >
                                                 <div className="text-black hover-bg-transparent hover-text-primary d-flex align-items-center gap-3">
@@ -715,7 +715,7 @@ const MasterLayout = ({ children }) => {
                                                 </span>
                                             </Link>
                                             <Link
-                                                to="#"
+                                                href="#"
                                                 className="px-24 py-12 d-flex align-items-start gap-3 mb-2 justify-content-between bg-neutral-50"
                                             >
                                                 <div className="text-black hover-bg-transparent hover-text-primary d-flex align-items-center gap-3">
@@ -740,7 +740,7 @@ const MasterLayout = ({ children }) => {
                                                 </span>
                                             </Link>
                                             <Link
-                                                to="#"
+                                                href="#"
                                                 className="px-24 py-12 d-flex align-items-start gap-3 mb-2 justify-content-between"
                                             >
                                                 <div className="text-black hover-bg-transparent hover-text-primary d-flex align-items-center gap-3">
@@ -764,7 +764,7 @@ const MasterLayout = ({ children }) => {
                                         </div>
                                         <div className="text-center py-12 px-16">
                                             <Link
-                                                to="#"
+                                                href="#"
                                                 className="text-primary-600 fw-semibold text-md"
                                             >
                                                 See All Notification
@@ -809,7 +809,7 @@ const MasterLayout = ({ children }) => {
                                             <li>
                                                 <Link
                                                     className="dropdown-item text-black px-0 py-8 hover-bg-transparent hover-text-primary d-flex align-items-center gap-3"
-                                                    to="/view-profile"
+                                                    href="/view-profile"
                                                 >
                                                     <Icon
                                                         icon="solar:user-linear"
@@ -821,7 +821,7 @@ const MasterLayout = ({ children }) => {
                                             <li>
                                                 <Link
                                                     className="dropdown-item text-black px-0 py-8 hover-bg-transparent hover-text-primary d-flex align-items-center gap-3"
-                                                    to="/email"
+                                                    href="/email"
                                                 >
                                                     <Icon
                                                         icon="tabler:message-check"
@@ -833,7 +833,7 @@ const MasterLayout = ({ children }) => {
                                             <li>
                                                 <Link
                                                     className="dropdown-item text-black px-0 py-8 hover-bg-transparent hover-text-primary d-flex align-items-center gap-3"
-                                                    to="/company"
+                                                    href="/company"
                                                 >
                                                     <Icon
                                                         icon="icon-park-outline:setting-two"
@@ -845,7 +845,7 @@ const MasterLayout = ({ children }) => {
                                             <li>
                                                 <Link
                                                     className="dropdown-item text-black px-0 py-8 hover-bg-transparent hover-text-danger d-flex align-items-center gap-3"
-                                                    to="#"
+                                                    href="#"
                                                 >
                                                     <Icon
                                                         icon="lucide:power"

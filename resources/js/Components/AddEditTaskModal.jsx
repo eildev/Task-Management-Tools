@@ -2,7 +2,7 @@
 import React, { useEffect, useState } from "react";
 import { Button, Form, Modal } from "react-bootstrap";
 
-const AddEditTaskModal = () => {
+const AddEditTaskModal = ({ show, handleClose, handleSave, task }) => {
     const isEdit = Boolean(task);
     const [title, setTitle] = useState("");
     const [tag, setTag] = useState("");

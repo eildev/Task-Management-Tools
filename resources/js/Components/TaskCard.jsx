@@ -1,3 +1,4 @@
+import { Draggable } from "@hello-pangea/dnd";
 import { Icon } from "@iconify/react";
 
 const TaskCard = ({ task, index, onEdit, onDelete, onDuplicate }) => {
