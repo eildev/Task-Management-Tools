@@ -47,6 +47,14 @@ Route::get('/task-manage', function () {
 
 Route::middleware('auth')->group(function () {
 
+
+   Route::get('/admindashboard', function () {
+    return Inertia::render('Home');
+   })->name('adminDashboard');
+
+
+
+
     Route::controller(TaskController::class)->group(function () {
         Route::get('/tasks', 'index')->name('tasks.index');
         Route::get('/tasks/create', 'create')->name('tasks.create');
