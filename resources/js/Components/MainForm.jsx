@@ -7,7 +7,7 @@ const MainForm = () => {
                 </div>
                 <div className="card-body">
                     <div className="row gy-3">
-                        <div className="col-12">
+                        <div className="col-md-4">
                             <label className="form-label">Input Small</label>
                             <input
                                 type="text"
