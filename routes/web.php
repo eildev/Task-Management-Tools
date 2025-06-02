@@ -38,9 +38,15 @@ Route::get('/', function () {
         'phpVersion' => PHP_VERSION,
     ]);
 });
+
+Route::get('/task', function () {
+    return Inertia::render('Task');
+})->middleware('auth');
+
 Route::get('/task-manage', function () {
     return Inertia::render('TaskManage');
-});
+})->middleware('auth');
+
 
 
 
@@ -48,9 +54,9 @@ Route::get('/task-manage', function () {
 Route::middleware('auth')->group(function () {
 
 
-   Route::get('/admindashboard', function () {
-    return Inertia::render('Home');
-   })->name('adminDashboard');
+    Route::get('/admindashboard', function () {
+        return Inertia::render('Home');
+    })->name('adminDashboard');
 
 
 

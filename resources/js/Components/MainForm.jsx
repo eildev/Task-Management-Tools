@@ -1,3 +1,5 @@
+import SelectSearch from "./SelectSearch";
+
 const MainForm = () => {
     return (
         <div className="col-md-12">
@@ -8,11 +10,33 @@ const MainForm = () => {
                 <div className="card-body">
                     <div className="row gy-3">
                         <div className="col-md-4">
+                            {/* <label className="form-label">
+                                Select Projects
+                            </label> */}
+                            {/* <input
+                                type="text"
+                                name="name"
+                                className="form-control form-control-sm rounded-2"
+                                placeholder="Enter Task Name"
+                            /> */}
+
+                            <SelectSearch name="Select Projects" />
+                        </div>
+                        <div className="col-md-4">
                             <label className="form-label">Task Name</label>
                             <input
                                 type="text"
                                 name="name"
-                                className="form-control form-control-sm"
+                                className="form-control form-control-sm rounded-2"
+                                placeholder="Enter Task Name"
+                            />
+                        </div>
+                        <div className="col-md-4">
+                            <label className="form-label">Task Name</label>
+                            <input
+                                type="text"
+                                name="name"
+                                className="form-control form-control-sm rounded-2"
                                 placeholder="Enter Task Name"
                             />
                         </div>
