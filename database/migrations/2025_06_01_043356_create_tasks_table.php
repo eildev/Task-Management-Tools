@@ -21,13 +21,13 @@ return new class extends Migration
             $table->string('assign_date')->nullable();
             $table->unsignedBigInteger('assign_to')->nullable();
             $table->date('deadline')->nullable();
-            $table->enum('priority',['low','medium','high'])->default('low');
-            $table->enum('status',['pending','inprogress','completed','cancelled','hold','rejected','approved','issues'])->default('pending');
+            $table->enum('priority', ['low', 'medium', 'high'])->default('low');
+            $table->enum('status', ['pending', 'inprogress', 'completed', 'cancelled', 'hold', 'rejected', 'approved', 'issues'])->default('pending');
             $table->unsignedBigInteger('project_id');
             $table->unsignedBigInteger('module_id');
             $table->unsignedBigInteger('submodule_id')->nullable();
             $table->unsignedBigInteger('feature_id')->nullable();
-            $table->string('completetion_date')->nullable();
+            $table->string('completion_date')->nullable();
             $table->string('remarks')->nullable();
             $table->unsignedBigInteger('updated_by')->unsigned()->nullable();
             // $table->unsignedBigInteger('task_group_id')->nullable();
