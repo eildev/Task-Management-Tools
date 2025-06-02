@@ -1,5 +1,24 @@
 import SelectSearch from "./SelectSearch";
 
+const options = [
+    {
+        value: 1,
+        label: "Dhaka",
+    },
+    {
+        value: 2,
+        label: "chittagram",
+    },
+    {
+        value: 3,
+        label: "Rangpur",
+    },
+    {
+        value: 3,
+        label: "Rajshahi",
+    },
+];
+
 const MainForm = () => {
     return (
         <div className="col-md-12">
@@ -20,7 +39,12 @@ const MainForm = () => {
                                 placeholder="Enter Task Name"
                             /> */}
 
-                            <SelectSearch name="Select Projects" />
+                            <SelectSearch
+                                name="name"
+                                label="Select Projects"
+                                placeholder="Select projects"
+                                options={options}
+                            />
                         </div>
                         <div className="col-md-4">
                             <label className="form-label">Task Name</label>
