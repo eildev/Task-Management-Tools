@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { Icon } from "@iconify/react";
 import { useForm } from "@inertiajs/react";
 
@@ -13,6 +13,7 @@ const SelectSearch = ({
     const [isOpen, setIsOpen] = useState(false);
     const [selectedOption, setSelectedOption] = useState(null);
     const { data, setData } = useForm({ [name]: "" });
+    const dropdownRef = useRef(null);
 
     // Filter options based on search term
     const filteredOptions = options.filter((option) =>
@@ -39,10 +40,27 @@ const SelectSearch = ({
         setIsOpen(!isOpen);
     };
 
+    // Handle click outside to close dropdown
+    useEffect(() => {
+        const handleClickOutside = (event) => {
+            if (
+                dropdownRef.current &&
+                !dropdownRef.current.contains(event.target)
+            ) {
+                setIsOpen(false);
+            }
+        };
+
+        document.addEventListener("mousedown", handleClickOutside);
+        return () => {
+            document.removeEventListener("mousedown", handleClickOutside);
+        };
+    }, []);
+
     return (
         <div className="mb-3">
             {label && <label className="form-label fw-semibold">{label}</label>}
-            <div className="position-relative">
+            <div className="position-relative" ref={dropdownRef}>
                 <div
                     className="form-control d-flex align-items-center justify-content-between"
                     onClick={toggleDropdown}
