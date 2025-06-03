@@ -10,6 +10,7 @@ use App\Http\Controllers\TaskGroupController;
 use App\Http\Controllers\TaskController;
 use App\Http\Controllers\SprintController;
 use App\Http\Controllers\Auth\RegisteredUserController;
+use App\Http\Controllers\UserController;
 // Route::get('/', function () {
 //     return Inertia::render('Welcome', [
 //         'canLogin' => Route::has('login'),
@@ -90,6 +91,27 @@ Route::middleware('auth')->group(function () {
         Route::put('/sprints/{sprint}', 'update')->name('sprints.update');
         Route::delete('/sprints/{sprint}', 'destroy')->name('sprints.destroy');
     });
+
+    Route::controller(ProfileController::class)->group(function () {
+            Route::get('/viewprofile', 'edit')->name('profile.edit');
+            Route::post('/profile','update')->name('profile.update');
+            Route::delete('/profile','destroy')->name('profile.destroy');
+    });
+
+    // Route::controller(RegisteredUserController::class)->group(function () {
+    //     Route::get('/register', 'create')->name('register');
+    //     Route::post('/register', 'store')->name('register.store');
+    // });
+    Route::controller(UserController::class)->group(function () {
+        Route::get('/users/index', 'index')->name('users.index');
+        Route::get('/users/create', 'create')->name('users.create');
+        Route::post('/users/store', 'store')->name('users.store');
+        Route::get('/users/{user}', 'show')->name('users.show');
+        Route::get('/users/{user}/edit', 'edit')->name('users.edit');
+        Route::put('/users/{user}', 'update')->name('users.update');
+        Route::get('/users/{user_id}/delete', 'destroy')->name('users.destroy');
+    });
+
 });
 
 
@@ -101,10 +123,6 @@ Route::get('/dashboard', function () {
     return Inertia::render('Dashboard');
 })->middleware(['auth', 'verified'])->name('dashboard');
 
-Route::middleware('auth')->group(function () {
-    Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
-    Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
-    Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
-});
+
 
 require __DIR__ . '/auth.php';

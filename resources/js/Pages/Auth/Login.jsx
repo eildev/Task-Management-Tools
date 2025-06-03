@@ -1,8 +1,8 @@
-import Checkbox from '@/Components/Checkbox';
-import InputError from '@/Components/InputError';
-import InputLabel from '@/Components/InputLabel';
-import PrimaryButton from '@/Components/PrimaryButton';
-import TextInput from '@/Components/TextInput';
+import Checkbox from '@/components/Checkbox';
+import InputError from '@/components/InputError';
+import InputLabel from '@/components/InputLabel';
+import PrimaryButton from '@/components/PrimaryButton';
+import TextInput from '@/components/TextInput';
 import { Head, Link, useForm } from '@inertiajs/react';
 import { route } from 'ziggy-js';
 import { Icon } from "@iconify/react";
@@ -22,104 +22,7 @@ const Login = ({ status, canResetPassword ,canRegister }) => {
         });
     };
 
-//    return (
-//     <>
-//         <Head title="Login" />
-//         <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-indigo-600 via-purple-600 to-pink-600 px-4">
-//             <div className="w-full max-w-md bg-white shadow-lg rounded-2xl p-8">
-//                 <h2 className="text-3xl font-extrabold text-center text-gray-800 mb-2">
-//                     Welcome Back 👋
-//                 </h2>
-//                 <p className="text-sm text-center text-gray-500 mb-6">
-//                     Please login to your account
-//                 </p>
 
-//                 {status && (
-//                     <div className="mb-4 text-sm font-medium text-green-600">
-//                         {status}
-//                     </div>
-//                 )}
-
-                // <form onSubmit={submit} className="space-y-5">
-                //     {/* Email */}
-                //     <div>
-                //         <InputLabel htmlFor="email" value="Email Address" />
-                //         <TextInput
-                //             id="email"
-                //             type="email"
-                //             name="email"
-                //             value={data.email}
-                //             className="mt-1 block w-full"
-                //             autoComplete="username"
-                //             isFocused={true}
-                //             onChange={(e) => setData('email', e.target.value)}
-                //         />
-                //         <InputError message={errors.email} className="mt-1 text-red-500 text-sm" />
-                //     </div>
-
-                //     {/* Password */}
-                //     <div>
-                //         <InputLabel htmlFor="password" value="Password" />
-                //         <TextInput
-                //             id="password"
-                //             type="password"
-                //             name="password"
-                //             value={data.password}
-                //             className="mt-1 block w-full"
-                //             autoComplete="current-password"
-                //             onChange={(e) => setData('password', e.target.value)}
-                //         />
-                //         <InputError message={errors.password} className="mt-1 text-red-500 text-sm" />
-                //     </div>
-
-                //     {/* Remember + Forgot */}
-                //     <div className="flex items-center justify-between text-sm">
-                //         <label className="flex items-center">
-                //             <Checkbox
-                //                 name="remember"
-                //                 checked={data.remember}
-                //                 onChange={(e) => setData('remember', e.target.checked)}
-                //             />
-                //             <span className="ml-2 text-gray-600">Remember me</span>
-                //         </label>
-
-                //         {canResetPassword && (
-                //             <Link
-                //                 href={route('password.request')}
-                //                 className="text-indigo-600 hover:underline font-medium"
-                //             >
-                //                 Forgot password?
-                //             </Link>
-                //         )}
-                //     </div>
-
-                //     {/* Submit Button */}
-                //     <div>
-                //         <PrimaryButton
-                //             className="w-full justify-center bg-indigo-600 hover:bg-indigo-700 text-white font-semibold"
-                //             disabled={processing}
-                //         >
-                //             Log in
-                //         </PrimaryButton>
-                //     </div>
-                // </form>
-
-//                 {/* Sign up */}
-//                 <div className="mt-6 text-center text-sm text-gray-600">
-//                     Don’t have an account?{' '}
-//                     {canRegister && (
-//                         <Link
-//                             href={route('register')}
-//                             className="text-indigo-600 font-medium hover:underline"
-//                         >
-//                             Sign up
-//                         </Link>
-//                     )}
-//                 </div>
-//             </div>
-//         </div>
-//     </>
-// );
    return(
     <>
        {status && (
@@ -305,7 +208,7 @@ const Login = ({ status, canResetPassword ,canRegister }) => {
                                 <div className="mt-32 center-border-horizontal text-center">
                                     <span className="bg-base z-1 px-4">Or sign in with</span>
                                 </div>
-                               
+
                         </form>
                         </div>
                     </div>
