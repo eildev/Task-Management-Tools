@@ -10,12 +10,12 @@ const MasterLayout = ({ children }) => {
     const user = usePage().props.auth.user;
 
     // Enhanced logging to debug
-    console.info("MasterLayout: Component loaded");
-    console.debug("MasterLayout: Current URL:", url);
-    console.debug("MasterLayout: User:", user);
+    // console.info("MasterLayout: Component loaded");
+    // console.debug("MasterLayout: Current URL:", url);
+    // console.debug("MasterLayout: User:", user);
 
     useEffect(() => {
-        console.info("MasterLayout: useEffect triggered with url:", url);
+        // console.info("MasterLayout: useEffect triggered with url:", url);
 
         const handleDropdownClick = (event) => {
             event.preventDefault();
