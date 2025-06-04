@@ -93,9 +93,9 @@ Route::middleware('auth')->group(function () {
     });
 
     Route::controller(ProfileController::class)->group(function () {
-            Route::get('/viewprofile', 'edit')->name('profile.edit');
-            Route::post('/profile','update')->name('profile.update');
-            Route::delete('/profile','destroy')->name('profile.destroy');
+        Route::get('/viewprofile', 'edit')->name('profile.edit');
+        Route::post('/profile', 'update')->name('profile.update');
+        Route::delete('/profile', 'destroy')->name('profile.destroy');
     });
 
     // Route::controller(RegisteredUserController::class)->group(function () {
@@ -111,7 +111,6 @@ Route::middleware('auth')->group(function () {
         Route::put('/users/{user}', 'update')->name('users.update');
         Route::get('/users/{user_id}/delete', 'destroy')->name('users.destroy');
     });
-
 });
 
 
@@ -119,9 +118,9 @@ Route::middleware('auth')->group(function () {
 
 
 
-Route::get('/dashboard', function () {
-    return Inertia::render('Dashboard');
-})->middleware(['auth', 'verified'])->name('dashboard');
+// Route::get('/dashboard', function () {
+//     return Inertia::render('Dashboard');
+// })->middleware(['auth', 'verified'])->name('dashboard');
 
 
 
