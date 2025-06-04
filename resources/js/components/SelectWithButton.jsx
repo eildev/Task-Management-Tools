@@ -25,7 +25,10 @@ const SelectWithButton = ({
                 <button
                     type="button"
                     className="btn btn-outline-info-600 radius-4 p-10 w-40-px h-40-px d-flex align-items-center justify-content-center gap-2"
-                    onClick={() => handleAddTaskGroup(buttonValue)}
+                    onClick={() => {
+                        console.log("Button clicked, value:", buttonValue);
+                        handleAddTaskGroup(buttonValue);
+                    }}
                 >
                     <Icon icon="mynaui:plus" className="text-xl" />
                 </button>
