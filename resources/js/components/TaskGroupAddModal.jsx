@@ -1,3 +1,4 @@
+import { router } from "@inertiajs/react";
 import { useState } from "react";
 import { Button, Form, Modal } from "react-bootstrap";
 
@@ -16,34 +17,62 @@ const TaskGroupAddModal = ({ show, handleClose }) => {
         }
     };
 
-    const handleTaskGroupDataSave = ({}) => {
-        if (!title || !description || !tag || !date) {
-            alert("Please fill in all required fields.");
-            return;
+    // const handleTaskGroupDataSave = ({}) => {
+    //     if (!title || !description || !tag || !date) {
+    //         alert("Please fill in all required fields.");
+    //         return;
+    //     }
+
+    //     const taskData = {
+    //         title,
+    //         description,
+    //         tag,
+    //         date,
+    //         image: imagePreview || null,
+    //     };
+
+    //     handleSave(taskData, isEdit);
+    //     setTitle("");
+    //     setTag("");
+    //     setDate("");
+    //     setDescription("");
+    //     setImagePreview("");
+    // };
+
+    // Form submission
+    const submit = (e) => {
+        e.preventDefault();
+
+        const formData = new FormData();
+        if (data.image instanceof File) {
+            formData.append("image", data.image);
         }
 
-        const taskData = {
-            title,
-            description,
-            tag,
-            date,
-            image: imagePreview || null,
-        };
-
-        handleSave(taskData, isEdit);
-        setTitle("");
-        setTag("");
-        setDate("");
-        setDescription("");
-        setImagePreview("");
+        router.post(route("task-groups.create"), formData, {
+            forceFormData: true,
+            preserveScroll: true,
+            onSuccess: () => {
+                toast.success("Task Group Create successfully!");
+            },
+            onError: (errors) => {
+                if (errors.password) {
+                    toast.error(errors.password);
+                } else {
+                    toast.error(
+                        "Something went wrong! Check the form for errors."
+                    );
+                }
+            },
+        });
     };
+
     return (
         <Modal show={show} onHide={handleClose}>
             <Modal.Header closeButton>
                 <h6>Add Task Group</h6>
             </Modal.Header>
             <Modal.Body>
-                <Form>
+                <Form onSubmit={submit}>
                     {/* Title */}
                     <Form.Group className="mb-3" controlId="taskTitle">
                         <Form.Label>Task Group Name</Form.Label>
