@@ -8,20 +8,20 @@ use Illuminate\Container\Attributes\Auth;
 use Inertia\Inertia;
 use App\Models\TaskGroup;
 use Illuminate\Support\Facades\Auth as FacadesAuth;
-use App\Models\user;
+use App\Models\User;
 
 class TaskController extends Controller
 {
     public function index()
     {
-
-        $tasks = Task::all();
-        return Inertia::render('Tasks/Index', ['tasks' => $tasks]);
+        $taskGroups = TaskGroup::get();
+        $users = User::get();
+        return Inertia::render('Task/Task', ['taskGroups' => $taskGroups, 'users' => $users]);
     }
 
-    public function create()
+    public function manageTask()
     {
-        return Inertia::render('Tasks/Create');
+        return Inertia::render('Task/TaskManage');
     }
 
     public function store(Request $request)

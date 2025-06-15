@@ -11,24 +11,6 @@ use App\Http\Controllers\TaskController;
 use App\Http\Controllers\SprintController;
 use App\Http\Controllers\Auth\RegisteredUserController;
 use App\Http\Controllers\UserController;
-// Route::get('/', function () {
-//     return Inertia::render('Welcome', [
-//         'canLogin' => Route::has('login'),
-//         'canRegister' => Route::has('register'),
-//         'laravelVersion' => Application::VERSION,
-//         'phpVersion' => PHP_VERSION,
-//     ]);
-// });
-
-// Route::get('/', function () {
-//     return Inertia::render('Home');
-// });
-
-
-// Route::get('/', [DashboardController::class, 'index']);
-// Route::get('/task', function () {
-//     return Inertia::render('Task');
-// });
 
 
 Route::get('/', function () {
@@ -40,17 +22,6 @@ Route::get('/', function () {
     ]);
 });
 
-Route::get('/task', function () {
-    return Inertia::render('Task');
-})->middleware('auth');
-
-Route::get('/task-manage', function () {
-    return Inertia::render('TaskManage');
-})->middleware('auth');
-
-
-
-
 
 Route::middleware('auth')->group(function () {
 
@@ -59,12 +30,9 @@ Route::middleware('auth')->group(function () {
         return Inertia::render('Home');
     })->name('adminDashboard');
 
-
-
-
     Route::controller(TaskController::class)->group(function () {
-        Route::get('/tasks', 'index')->name('tasks.index');
-        Route::get('/tasks/create', 'create')->name('tasks.create');
+        Route::get('/task', 'index')->name('task.index');
+        Route::get('/task-manage', 'manageTask')->name('task.manage');
         Route::post('/tasks', 'store')->name('tasks.store');
         Route::get('/tasks/{task}', 'show')->name('tasks.show');
         Route::get('/tasks/{task}/edit', 'edit')->name('tasks.edit');

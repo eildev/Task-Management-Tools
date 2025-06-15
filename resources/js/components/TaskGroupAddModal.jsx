@@ -1,11 +1,41 @@
-import { router } from "@inertiajs/react";
-import { useState } from "react";
+import axios from "axios";
+import { useEffect, useState } from "react";
 import { Button, Form, Modal } from "react-bootstrap";
+import toast from "react-hot-toast";
 
-const TaskGroupAddModal = ({ show, handleClose }) => {
+// Type mapping object
+const typeDisplayNames = {
+    project: "Projects",
+    module: "Modules",
+    submodule: "Sub Modules",
+    feature: "Feature",
+};
+
+// Function to get display name for a given type
+const getDisplayName = (type) => {
+    return typeDisplayNames[type] || "";
+};
+
+const TaskGroupAddModal = ({ show, handleClose, type }) => {
+    // console.log("modal", type);
+    const [data, setData] = useState({
+        name: "",
+        description: "",
+        start_date: "",
+        end_date: "",
+        image: null,
+        type: "",
+    });
     const [imagePreview, setImagePreview] = useState("");
+    const [errors, setErrors] = useState({});
+
+    useEffect(() => {
+        setData((prev) => ({ ...prev, type: type || "" }));
+    }, [type]);
+
     const handleImageChange = (e) => {
         const file = e.target.files[0];
+        setData((prev) => ({ ...prev, image: file })); // Update only the image field
         if (file) {
             const reader = new FileReader();
             reader.onloadend = () => {
@@ -14,76 +44,103 @@ const TaskGroupAddModal = ({ show, handleClose }) => {
             reader.readAsDataURL(file);
         } else {
             setImagePreview("");
+            setData((prev) => ({ ...prev, image: null }));
         }
     };
 
-    // const handleTaskGroupDataSave = ({}) => {
-    //     if (!title || !description || !tag || !date) {
-    //         alert("Please fill in all required fields.");
-    //         return;
-    //     }
+    const handleInputChange = (e) => {
+        const { name, value } = e.target;
+        setData((prev) => ({ ...prev, [name]: value }));
+    };
 
-    //     const taskData = {
-    //         title,
-    //         description,
-    //         tag,
-    //         date,
-    //         image: imagePreview || null,
-    //     };
+    const handleTaskGroupDataSave = () => {
+        // Client-side validation
+        // if (!data.name) {
+        //     setErrors({ name: "Task Group Name is required" });
+        //     return;
+        // }
+        // if (!data.type) {
+        //     setErrors({ type: "Type is required" });
+        //     return;
+        // }
 
-    //     handleSave(taskData, isEdit);
-    //     setTitle("");
-    //     setTag("");
-    //     setDate("");
-    //     setDescription("");
-    //     setImagePreview("");
-    // };
-
-    // Form submission
-    const submit = (e) => {
-        e.preventDefault();
-
+        // Create FormData for file upload
         const formData = new FormData();
-        if (data.image instanceof File) {
+        formData.append("name", data.name);
+        formData.append("type", data.type);
+        formData.append("description", data.description || "");
+        formData.append("start_date", data.start_date || "");
+        formData.append("end_date", data.end_date || "");
+        if (data.image) {
             formData.append("image", data.image);
         }
 
-        router.post(route("task-groups.create"), formData, {
-            forceFormData: true,
-            preserveScroll: true,
-            onSuccess: () => {
-                toast.success("Task Group Create successfully!");
-            },
-            onError: (errors) => {
-                if (errors.password) {
-                    toast.error(errors.password);
+        // Send POST request with axios
+        axios
+            .post(route("task-groups.store"), formData, {
+                headers: {
+                    "Content-Type": "multipart/form-data",
+                    "X-CSRF-TOKEN": document
+                        .querySelector('meta[name="csrf-token"]')
+                        .getAttribute("content"),
+                },
+            })
+            .then((response) => {
+                if (response?.data?.success) {
+                    console.log(response.data);
+                    setData({
+                        name: "",
+                        description: "",
+                        start_date: "",
+                        end_date: "",
+                        image: null,
+                        type: "",
+                    }); // Reset form
+                    setImagePreview("");
+                    setErrors({});
+                    handleClose();
+                    toast.success(response.data.message);
+                    // toast.success("Successfully toasted!");
                 } else {
-                    toast.error(
-                        "Something went wrong! Check the form for errors."
-                    );
+                    console.log(response);
                 }
-            },
-        });
+            })
+            .catch((error) => {
+                console.log(error);
+                // Handle errors
+                if (error.response && error.response.status === 422) {
+                    setErrors(error.response.data.errors);
+                }
+                toast.error(
+                    "Failed to create Task Group. Please check the form."
+                );
+            });
     };
+
+    // Get display name for the current type
+    const displayName = getDisplayName(type);
 
     return (
         <Modal show={show} onHide={handleClose}>
             <Modal.Header closeButton>
-                <h6>Add Task Group</h6>
+                <h6>Add {displayName} Info</h6>
             </Modal.Header>
             <Modal.Body>
-                <Form onSubmit={submit}>
+                <Form>
                     {/* Title */}
                     <Form.Group className="mb-3" controlId="taskTitle">
-                        <Form.Label>Task Group Name</Form.Label>
+                        <Form.Label>{displayName} Name</Form.Label>
                         <Form.Control
                             type="text"
-                            placeholder="Enter Task Title"
-                            // value={title}
-                            onChange={(e) => setTitle(e.target.value)}
-                            required
                             name="name"
+                            placeholder={`Enter ${displayName} Name`}
+                            value={data.name}
+                            onChange={handleInputChange}
+                            isInvalid={!!errors.name}
                         />
+                        <Form.Control.Feedback type="invalid">
+                            {errors.name}
+                        </Form.Control.Feedback>
                     </Form.Group>
 
                     {/* Start Date */}
@@ -91,23 +148,29 @@ const TaskGroupAddModal = ({ show, handleClose }) => {
                         <Form.Label>Start Date</Form.Label>
                         <Form.Control
                             type="date"
-                            // value={date}
-                            onChange={(e) => setDate(e.target.value)}
-                            required
                             name="start_date"
+                            value={data.start_date}
+                            onChange={handleInputChange}
+                            isInvalid={!!errors.start_date}
                         />
+                        <Form.Control.Feedback type="invalid">
+                            {errors.start_date}
+                        </Form.Control.Feedback>
                     </Form.Group>
 
                     {/* End Date */}
-                    <Form.Group className="mb-3" controlId="startDate">
+                    <Form.Group className="mb-3" controlId="endDate">
                         <Form.Label>End Date</Form.Label>
                         <Form.Control
                             type="date"
-                            // value={date}
-                            onChange={(e) => setDate(e.target.value)}
-                            required
                             name="end_date"
+                            value={data.end_date}
+                            onChange={handleInputChange}
+                            isInvalid={!!errors.end_date}
                         />
+                        <Form.Control.Feedback type="invalid">
+                            {errors.end_date}
+                        </Form.Control.Feedback>
                     </Form.Group>
 
                     {/* Description */}
@@ -116,12 +179,15 @@ const TaskGroupAddModal = ({ show, handleClose }) => {
                         <Form.Control
                             as="textarea"
                             rows={3}
-                            placeholder="Write some text"
-                            // value={description}
-                            onChange={(e) => setDescription(e.target.value)}
-                            required
                             name="description"
+                            placeholder="Write some text"
+                            value={data.description}
+                            onChange={handleInputChange}
+                            isInvalid={!!errors.description}
                         />
+                        <Form.Control.Feedback type="invalid">
+                            {errors.description}
+                        </Form.Control.Feedback>
                     </Form.Group>
 
                     {/* Image */}
@@ -129,15 +195,18 @@ const TaskGroupAddModal = ({ show, handleClose }) => {
                         <Form.Label>
                             Attachments{" "}
                             <span className="text-muted">
-                                (Jpg, Png format)
+                                (Jpg, Png, PDF format)
                             </span>
                         </Form.Label>
                         <Form.Control
                             type="file"
                             accept="image/*"
                             onChange={handleImageChange}
-                            name="image"
+                            isInvalid={!!errors.image}
                         />
+                        <Form.Control.Feedback type="invalid">
+                            {errors.image}
+                        </Form.Control.Feedback>
                         {imagePreview && (
                             <img
                                 src={imagePreview}

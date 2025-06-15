@@ -17,7 +17,9 @@ const SelectSearch = ({
 
     // Filter options based on search term
     const filteredOptions = options.filter((option) =>
-        option.label.toLowerCase().includes(searchTerm.toLowerCase())
+        (option.label ?? option.name ?? "")
+            .toLowerCase()
+            .includes(searchTerm.toLowerCase())
     );
 
     // Handle option selection
@@ -97,12 +99,12 @@ const SelectSearch = ({
                             {filteredOptions.length > 0 ? (
                                 filteredOptions.map((option) => (
                                     <li
-                                        key={option.value}
+                                        key={option.value ?? option.id}
                                         className="list-group-item list-group-item-action"
                                         onClick={() => handleSelect(option)}
                                         style={{ cursor: "pointer" }}
                                     >
-                                        {option.label}
+                                        {option.label ?? option.name}
                                     </li>
                                 ))
                             ) : (

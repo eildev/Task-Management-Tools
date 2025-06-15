@@ -4,37 +4,21 @@ import SelectSearch from "./SelectSearch";
 import { useState } from "react";
 import TaskGroupAddModal from "./TaskGroupAddModal";
 
-const options = [
-    {
-        value: 1,
-        label: "Dhaka",
-    },
-    {
-        value: 2,
-        label: "chittagram",
-    },
-    {
-        value: 3,
-        label: "Rangpur",
-    },
-    {
-        value: 3,
-        label: "Rajshahi",
-    },
-];
+const MainForm = ({ taskGroups, users }) => {
+    console.log("users", users);
+    const projects = taskGroups.filter((task) => task.type === "project");
+    const modules = taskGroups.filter((task) => task.type === "module");
+    const submodules = taskGroups.filter((task) => task.type === "submodule");
+    const features = taskGroups.filter((task) => task.type === "feature");
 
-const MainForm = () => {
     const [showModal, setShowModal] = useState(false);
+    const [type, setType] = useState("");
 
     // handle add Task Group
     const handleAddTaskGroup = (value) => {
-        console.log("handleAddTaskGroup called with value:", value);
-        console.log("showModal before:", showModal);
+        setType(value);
         setShowModal(true);
-        console.log("showModal after:", showModal);
     };
-
-
 
     return (
         <>
@@ -50,9 +34,9 @@ const MainForm = () => {
                                     name="name"
                                     label="Projects"
                                     placeholder="Select projects"
-                                    options={options}
+                                    options={projects}
                                     handleAddTaskGroup={handleAddTaskGroup}
-                                    buttonValue="projects"
+                                    buttonValue="project"
                                 />
                             </div>
                             <div className="col-md-4">
@@ -60,9 +44,9 @@ const MainForm = () => {
                                     name="module"
                                     label="Modules"
                                     placeholder="Select Modules"
-                                    options={options}
+                                    options={modules}
                                     handleAddTaskGroup={handleAddTaskGroup}
-                                    buttonValue="modules"
+                                    buttonValue="module"
                                 />
                             </div>
                             <div className="col-md-4">
@@ -70,9 +54,9 @@ const MainForm = () => {
                                     name="sub_module"
                                     label="Sub Modules"
                                     placeholder="Select Sub Modules"
-                                    options={options}
+                                    options={submodules}
                                     handleAddTaskGroup={handleAddTaskGroup}
-                                    buttonValue="sub_modules"
+                                    buttonValue="submodule"
                                 />
                             </div>
                             <div className="col-md-4">
@@ -80,7 +64,7 @@ const MainForm = () => {
                                     name="name"
                                     label="Feature"
                                     placeholder="Select Feature"
-                                    options={options}
+                                    options={features}
                                     handleAddTaskGroup={handleAddTaskGroup}
                                     buttonValue="feature"
                                 />
@@ -95,7 +79,9 @@ const MainForm = () => {
                                 />
                             </div>
                             <div className="col-md-4">
-                                <label className="form-label">Assign Date</label>
+                                <label className="form-label">
+                                    Assign Date
+                                </label>
                                 <input
                                     type="date"
                                     name="assign_date"
@@ -115,7 +101,7 @@ const MainForm = () => {
                                     name="assign_to"
                                     label="Assign To"
                                     placeholder="Select To Assign"
-                                    options={options}
+                                    options={users}
                                 />
                             </div>
                             <div className="col-md-4">
@@ -169,8 +155,8 @@ const MainForm = () => {
             <TaskGroupAddModal
                 show={showModal}
                 handleClose={() => setShowModal(false)}
+                type={type}
             />
-
         </>
     );
 };
