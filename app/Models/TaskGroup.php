@@ -6,13 +6,28 @@ use Illuminate\Database\Eloquent\Model;
 
 class TaskGroup extends Model
 {
-    protected $guarded = [];
+    protected $fillable = [
+        'name',
+        'type',
+        'description',
+        'start_date',
+        'end_date',
+        'image',
+        'created_by',
+    ];
 
-    public function tasks(){
+    protected $casts = [
+        'start_date' => 'date',
+        'end_date' => 'date',
+    ];
+
+    public function tasks()
+    {
         return $this->hasMany(Task::class);
     }
 
-    public function user(){
+    public function user()
+    {
         return $this->belongsTo(User::class);
     }
 }

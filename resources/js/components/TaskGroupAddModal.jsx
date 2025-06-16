@@ -1,3 +1,4 @@
+import { Icon } from "@iconify/react";
 import axios from "axios";
 import { useEffect, useState } from "react";
 import { Button, Form, Modal } from "react-bootstrap";
@@ -17,34 +18,41 @@ const getDisplayName = (type) => {
 };
 
 const TaskGroupAddModal = ({ show, handleClose, type }) => {
-    // console.log("modal", type);
     const [data, setData] = useState({
         name: "",
         description: "",
         start_date: "",
         end_date: "",
-        image: null,
+        attachment: null, // Changed from 'image' to 'attachment'
         type: "",
     });
-    const [imagePreview, setImagePreview] = useState("");
+    const [attachmentPreview, setAttachmentPreview] = useState(null); // Changed from 'imagePreview'
     const [errors, setErrors] = useState({});
 
     useEffect(() => {
         setData((prev) => ({ ...prev, type: type || "" }));
     }, [type]);
 
-    const handleImageChange = (e) => {
+    const handleAttachmentChange = (e) => {
         const file = e.target.files[0];
-        setData((prev) => ({ ...prev, image: file })); // Update only the image field
+        setData((prev) => ({ ...prev, attachment: file }));
         if (file) {
-            const reader = new FileReader();
-            reader.onloadend = () => {
-                setImagePreview(reader.result);
-            };
-            reader.readAsDataURL(file);
+            if (file.type.startsWith("image/")) {
+                // Handle image preview
+                const reader = new FileReader();
+                reader.onloadend = () => {
+                    setAttachmentPreview({ type: "image", url: reader.result });
+                };
+                reader.readAsDataURL(file);
+            } else if (file.type === "application/pdf") {
+                // Handle PDF preview
+                setAttachmentPreview({ type: "pdf", name: file.name });
+            } else {
+                setAttachmentPreview(null);
+            }
         } else {
-            setImagePreview("");
-            setData((prev) => ({ ...prev, image: null }));
+            setAttachmentPreview(null);
+            setData((prev) => ({ ...prev, attachment: null }));
         }
     };
 
@@ -54,28 +62,16 @@ const TaskGroupAddModal = ({ show, handleClose, type }) => {
     };
 
     const handleTaskGroupDataSave = () => {
-        // Client-side validation
-        // if (!data.name) {
-        //     setErrors({ name: "Task Group Name is required" });
-        //     return;
-        // }
-        // if (!data.type) {
-        //     setErrors({ type: "Type is required" });
-        //     return;
-        // }
-
-        // Create FormData for file upload
         const formData = new FormData();
         formData.append("name", data.name);
         formData.append("type", data.type);
         formData.append("description", data.description || "");
         formData.append("start_date", data.start_date || "");
         formData.append("end_date", data.end_date || "");
-        if (data.image) {
-            formData.append("image", data.image);
+        if (data.attachment) {
+            formData.append("image", data.attachment); // Backend expects 'image' field
         }
 
-        // Send POST request with axios
         axios
             .post(route("task-groups.store"), formData, {
                 headers: {
@@ -87,37 +83,28 @@ const TaskGroupAddModal = ({ show, handleClose, type }) => {
             })
             .then((response) => {
                 if (response?.data?.success) {
-                    console.log(response.data);
                     setData({
                         name: "",
                         description: "",
                         start_date: "",
                         end_date: "",
-                        image: null,
+                        attachment: null,
                         type: "",
-                    }); // Reset form
-                    setImagePreview("");
+                    });
+                    setAttachmentPreview(null);
                     setErrors({});
                     handleClose();
                     toast.success(response.data.message);
-                    // toast.success("Successfully toasted!");
-                } else {
-                    console.log(response);
                 }
             })
             .catch((error) => {
-                console.log(error);
-                // Handle errors
                 if (error.response && error.response.status === 422) {
                     setErrors(error.response.data.errors);
                 }
-                toast.error(
-                    "Failed to create Task Group. Please check the form."
-                );
+                toast.error("Failed to create Task Group. Please check the form.");
             });
     };
 
-    // Get display name for the current type
     const displayName = getDisplayName(type);
 
     return (
@@ -190,8 +177,8 @@ const TaskGroupAddModal = ({ show, handleClose, type }) => {
                         </Form.Control.Feedback>
                     </Form.Group>
 
-                    {/* Image */}
-                    <Form.Group className="mb-3" controlId="taskImage">
+                    {/* Attachment */}
+                    <Form.Group className="mb-3" controlId="taskAttachment">
                         <Form.Label>
                             Attachments{" "}
                             <span className="text-muted">
@@ -200,23 +187,39 @@ const TaskGroupAddModal = ({ show, handleClose, type }) => {
                         </Form.Label>
                         <Form.Control
                             type="file"
-                            accept="image/*"
-                            onChange={handleImageChange}
+                            accept="image/jpeg,image/png,image/jpg,application/pdf"
+                            onChange={handleAttachmentChange}
                             isInvalid={!!errors.image}
                         />
                         <Form.Control.Feedback type="invalid">
                             {errors.image}
                         </Form.Control.Feedback>
-                        {imagePreview && (
-                            <img
-                                src={imagePreview}
-                                alt="Image_Preview"
-                                style={{
-                                    width: "100%",
-                                    marginTop: "10px",
-                                    display: "block",
-                                }}
-                            />
+                        {attachmentPreview && (
+                            <div
+                                className="mt-3"
+                                style={{ maxWidth: "100%", overflow: "hidden" }}
+                            >
+                                {attachmentPreview.type === "image" ? (
+                                    <img
+                                        src={attachmentPreview.url}
+                                        alt="Attachment Preview"
+                                        style={{
+                                            width: "100%",
+                                            maxHeight: "200px",
+                                            objectFit: "contain",
+                                        }}
+                                    />
+                                ) : (
+                                    <div className="d-flex align-items-center">
+                                        <Icon
+                                            icon="bi:file-earmark-pdf"
+                                            width="24"
+                                            className="me-2 text-danger"
+                                        />
+                                        <span>{attachmentPreview.name}</span>
+                                    </div>
+                                )}
+                            </div>
                         )}
                     </Form.Group>
                 </Form>

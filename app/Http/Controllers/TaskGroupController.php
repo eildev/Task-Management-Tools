@@ -41,7 +41,7 @@ class TaskGroupController extends Controller
             'description' => 'nullable|string',
             'start_date' => 'nullable|date',
             'end_date' => 'nullable|date|after_or_equal:start_date',
-            'image' => 'nullable|image|mimes:jpeg,png,jpg,pdf|max:2048',
+            'image' => 'nullable|file|mimes:jpeg,png,jpg,pdf|max:2048',
         ];
 
         // Define custom validation messages
@@ -53,7 +53,7 @@ class TaskGroupController extends Controller
             'type.string' => 'The type must be a string.',
             'type.max' => 'The type may not be greater than 255 characters.',
             'end_date.after_or_equal' => 'The end date must be a date after or equal to the start date.',
-            'image.image' => 'The attachment must be an image or PDF.',
+            'image.file' => 'The attachment must be a valid file.',
             'image.mimes' => 'The attachment must be a file of type: jpeg, png, jpg, pdf.',
             'image.max' => 'The attachment may not be greater than 2048 kilobytes.',
         ];

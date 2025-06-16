@@ -2,7 +2,7 @@ import Breadcrumb from "@/components/Breadcrumb";
 import MainForm from "@/components/MainForm";
 import MasterLayout from "@/layout/MasterLayout";
 
-const Task = ({ taskGroups }) => {
+const Task = ({ taskGroups, users }) => {
     // console.log(taskGroups);
     return (
         <>
@@ -11,7 +11,7 @@ const Task = ({ taskGroups }) => {
                 {/* Breadcrumb */}
                 <Breadcrumb title="Task" />
 
-                <MainForm taskGroups={taskGroups} />
+                <MainForm taskGroups={taskGroups} users={users} />
             </MasterLayout>
         </>
     );
