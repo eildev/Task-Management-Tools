@@ -3,6 +3,8 @@ import axios from "axios";
 import { useEffect, useState } from "react";
 import { Button, Form, Modal } from "react-bootstrap";
 import toast from "react-hot-toast";
+import PropTypes from "prop-types";
+import "../css/TaskGroupAddModal.css";
 
 // Type mapping object
 const typeDisplayNames = {
@@ -17,18 +19,20 @@ const getDisplayName = (type) => {
     return typeDisplayNames[type] || "";
 };
 
-const TaskGroupAddModal = ({ show, handleClose, type }) => {
+const TaskGroupAddModal = ({ show, handleClose, type, onAddTaskGroup }) => {
     const [data, setData] = useState({
         name: "",
         description: "",
         start_date: "",
         end_date: "",
-        attachment: null, // Changed from 'image' to 'attachment'
-        type: "",
+        attachment: null,
+        type: type || "", // Initialize with prop value
     });
-    const [attachmentPreview, setAttachmentPreview] = useState(null); // Changed from 'imagePreview'
+    const [attachmentPreview, setAttachmentPreview] = useState(null);
     const [errors, setErrors] = useState({});
+    const [isSaving, setIsSaving] = useState(false); // Added loading state
 
+    // Sync type prop changes
     useEffect(() => {
         setData((prev) => ({ ...prev, type: type || "" }));
     }, [type]);
@@ -38,17 +42,18 @@ const TaskGroupAddModal = ({ show, handleClose, type }) => {
         setData((prev) => ({ ...prev, attachment: file }));
         if (file) {
             if (file.type.startsWith("image/")) {
-                // Handle image preview
                 const reader = new FileReader();
                 reader.onloadend = () => {
                     setAttachmentPreview({ type: "image", url: reader.result });
                 };
                 reader.readAsDataURL(file);
             } else if (file.type === "application/pdf") {
-                // Handle PDF preview
                 setAttachmentPreview({ type: "pdf", name: file.name });
             } else {
                 setAttachmentPreview(null);
+                toast.error(
+                    "Invalid file type. Only JPG, PNG, or PDF allowed."
+                );
             }
         } else {
             setAttachmentPreview(null);
@@ -62,6 +67,19 @@ const TaskGroupAddModal = ({ show, handleClose, type }) => {
     };
 
     const handleTaskGroupDataSave = () => {
+        // Client-side validation
+        if (!data.name) {
+            setErrors({ name: "Name is required" });
+            toast.error("Please enter a name.");
+            return;
+        }
+        if (!data.type) {
+            setErrors({ type: "Type is required" });
+            toast.error("Type is missing. Please select a valid type.");
+            return;
+        }
+
+        setIsSaving(true);
         const formData = new FormData();
         formData.append("name", data.name);
         formData.append("type", data.type);
@@ -69,7 +87,7 @@ const TaskGroupAddModal = ({ show, handleClose, type }) => {
         formData.append("start_date", data.start_date || "");
         formData.append("end_date", data.end_date || "");
         if (data.attachment) {
-            formData.append("image", data.attachment); // Backend expects 'image' field
+            formData.append("image", data.attachment); // Backend expects 'image'
         }
 
         axios
@@ -83,34 +101,52 @@ const TaskGroupAddModal = ({ show, handleClose, type }) => {
             })
             .then((response) => {
                 if (response?.data?.success) {
+                    const newTaskGroup = response.data.taskGroup;
                     setData({
                         name: "",
                         description: "",
                         start_date: "",
                         end_date: "",
                         attachment: null,
-                        type: "",
+                        type: type || "", // Reset with current type
                     });
                     setAttachmentPreview(null);
                     setErrors({});
                     handleClose();
                     toast.success(response.data.message);
+                    if (onAddTaskGroup) {
+                        onAddTaskGroup(newTaskGroup);
+                    }
                 }
             })
             .catch((error) => {
+                console.error("Error saving task group:", error);
                 if (error.response && error.response.status === 422) {
-                    setErrors(error.response.data.errors);
+                    const serverErrors = error.response.data.errors;
+                    setErrors(serverErrors);
+                    Object.keys(serverErrors).forEach((key) => {
+                        toast.error(serverErrors[key][0]);
+                    });
+                } else {
+                    toast.error(
+                        "Failed to create Task Group. Please try again."
+                    );
                 }
-                toast.error("Failed to create Task Group. Please check the form.");
+            })
+            .finally(() => {
+                setIsSaving(false);
             });
     };
 
     const displayName = getDisplayName(type);
 
     return (
-        <Modal show={show} onHide={handleClose}>
+        <Modal show={show} onHide={handleClose} className="task-group-modal">
             <Modal.Header closeButton>
-                <h6>Add {displayName} Info</h6>
+                <Modal.Title>
+                    {" "}
+                    <h6>Add {displayName} Info</h6>
+                </Modal.Title>
             </Modal.Header>
             <Modal.Body>
                 <Form>
@@ -130,7 +166,7 @@ const TaskGroupAddModal = ({ show, handleClose, type }) => {
                         </Form.Control.Feedback>
                     </Form.Group>
 
-                    {/* Start Date */}
+                    {/* start date  */}
                     <Form.Group className="mb-3" controlId="startDate">
                         <Form.Label>Start Date</Form.Label>
                         <Form.Control
@@ -145,7 +181,7 @@ const TaskGroupAddModal = ({ show, handleClose, type }) => {
                         </Form.Control.Feedback>
                     </Form.Group>
 
-                    {/* End Date */}
+                    {/* end date  */}
                     <Form.Group className="mb-3" controlId="endDate">
                         <Form.Label>End Date</Form.Label>
                         <Form.Control
@@ -160,7 +196,7 @@ const TaskGroupAddModal = ({ show, handleClose, type }) => {
                         </Form.Control.Feedback>
                     </Form.Group>
 
-                    {/* Description */}
+                    {/* task description  */}
                     <Form.Group className="mb-3" controlId="taskDescription">
                         <Form.Label>Description</Form.Label>
                         <Form.Control
@@ -177,7 +213,7 @@ const TaskGroupAddModal = ({ show, handleClose, type }) => {
                         </Form.Control.Feedback>
                     </Form.Group>
 
-                    {/* Attachment */}
+                    {/* task attachment  */}
                     <Form.Group className="mb-3" controlId="taskAttachment">
                         <Form.Label>
                             Attachments{" "}
@@ -228,12 +264,23 @@ const TaskGroupAddModal = ({ show, handleClose, type }) => {
                 <Button variant="danger" onClick={handleClose}>
                     Cancel
                 </Button>
-                <Button variant="primary" onClick={handleTaskGroupDataSave}>
-                    Save Changes
+                <Button
+                    variant="primary"
+                    onClick={handleTaskGroupDataSave}
+                    disabled={isSaving}
+                >
+                    {isSaving ? "Saving..." : "Save Changes"}
                 </Button>
             </Modal.Footer>
         </Modal>
     );
+};
+
+TaskGroupAddModal.propTypes = {
+    show: PropTypes.bool.isRequired,
+    handleClose: PropTypes.func.isRequired,
+    type: PropTypes.string,
+    onAddTaskGroup: PropTypes.func,
 };
 
 export default TaskGroupAddModal;

@@ -1,3 +1,4 @@
+import WorkingScheduleCard from "@/components/WorkingScheduleCard";
 import LatestRegisteredOne from "../components/LatestRegisteredOne";
 import TopPerformerOne from "../components/TopPerformerOne";
 import UnitCountOne from "../components/UnitCountOne";
@@ -14,6 +15,9 @@ const DashboardLayerOne = () => {
 
                 {/* LatestRegisteredOne */}
                 <LatestRegisteredOne />
+
+                {/* WorkingScheduleCard */}
+                <WorkingScheduleCard />
             </section>
         </>
     );

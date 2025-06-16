@@ -1,0 +1,75 @@
+/* Default styles for light mode */
+.task-group-modal .form-control {
+    background-color: transparent;
+    /* Use theme variable */
+    color: var(--text-primary-light);
+    /* Use theme variable */
+    border: 1px solid var(--input-stroke);
+    /* Use theme variable */
+    transition: all 0.3s ease;
+}
+
+.task-group-modal .form-control:focus {
+    background-color: var(--input-bg);
+    color: var(--text-primary-light);
+    border-color: var(--primary-400);
+    /* Use theme primary color */
+    box-shadow: 0 0 0 0.25rem var(--primary-light);
+    /* Use theme shadow */
+}
+
+.task-group-modal .form-control[type="file"] {
+    border: 1px solid var(--input-stroke);
+    padding: 0.375rem 0.75rem;
+}
+
+.task-group-modal .text-muted {
+    color: var(--text-secondary-light) !important;
+    /* Use theme variable */
+}
+
+/* Dark mode styles */
+[data-theme="dark"] .task-group-modal .form-control {
+    background-color: transparent;
+    /* Use dark mode input background */
+    color: var(--text-primary-light);
+    /* Use dark mode text color */
+    border: 1px solid var(--input-stroke);
+    /* Use dark mode border */
+}
+
+[data-theme="dark"] .task-group-modal .form-control:focus {
+    background-color: var(--input-bg);
+    color: var(--text-primary-light);
+    border-color: var(--primary-400);
+    /* Consistent with light mode */
+    box-shadow: 0 0 0 0.25rem var(--primary-light);
+    /* Consistent shadow */
+}
+
+[data-theme="dark"] .task-group-modal .form-control[type="file"] {
+    border: 1px solid var(--input-stroke);
+}
+
+[data-theme="dark"] .task-group-modal .text-muted {
+    color: var(--text-secondary-light) !important;
+    /* Use dark mode secondary text */
+}
+
+/* Ensure modal background matches theme */
+[data-theme="dark"] .task-group-modal .modal-content {
+    background-color: var(--bg-color);
+    /* Use dark mode background */
+    color: var(--text-primary-light);
+    /* Use dark mode text color */
+}
+
+.task-group-modal .form-control.is-invalid {
+    border-color: var(--danger-500);
+    /* Use theme danger color */
+}
+
+[data-theme="dark"] .task-group-modal .form-control.is-invalid {
+    border-color: var(--danger-400);
+    /* Slightly lighter for dark mode */
+}

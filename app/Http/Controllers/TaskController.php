@@ -4,10 +4,9 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Task;
-use Illuminate\Container\Attributes\Auth;
 use Inertia\Inertia;
 use App\Models\TaskGroup;
-use Illuminate\Support\Facades\Auth as FacadesAuth;
+use Illuminate\Support\Facades\Auth;
 use App\Models\User;
 
 class TaskController extends Controller
@@ -54,8 +53,8 @@ class TaskController extends Controller
         if ($request->priority) {
             $task->priority = $request->priority;
         }
-        $task->assign_by = FacadesAuth::user()->id;
-        $task->created_by = FacadesAuth::user()->id;
+        $task->assign_by = Auth::user()->id;
+        $task->created_by = Auth::user()->id;
         $task->save();
 
         return response()->json([
