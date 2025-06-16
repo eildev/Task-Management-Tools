@@ -23,6 +23,16 @@ class TaskController extends Controller
         return Inertia::render('Task/TaskManage');
     }
 
+    public function show($id)
+    {
+        $task = Task::with(['project', 'module', 'submodule', 'feature', 'assignedTo'])
+            ->findOrFail($id);
+        return response()->json([
+            'success' => true,
+            'task' => $task,
+        ]);
+    }
+
     public function store(Request $request)
     {
         $validated = $request->validate([
@@ -30,7 +40,6 @@ class TaskController extends Controller
             'description' => 'required|string|max:1000',
             'attachment' => 'nullable|file|mimes:jpg,jpeg,png,pdf,doc,docx,xlsx,xls|max:2048',
             'assign_date' => 'nullable|date',
-
             'assign_to' => 'nullable|string|max:255',
             'deadline' => 'nullable|date',
             'status' => 'required|in:pending,inprogress,completed,cancelled,hold,rejected,approved,issues',
@@ -39,20 +48,19 @@ class TaskController extends Controller
             'submodule_id' => 'nullable|exists:task_groups,id',
             'feature_id' => 'nullable|exists:task_groups,id',
             'completion_date' => 'nullable|date',
+            'priority' => 'nullable|in:low,medium,high',
         ]);
 
         $task = new Task($validated);
 
         if ($request->hasFile('attachment')) {
             $file = $request->file('attachment');
-            $filename = time() . '_' . $file->Extension();
-            $path = 'attachments/tasks/';
+            $filename = time() . '.' . $file->extension();
+            $path = 'uploads/tasks/';
             $file->move(public_path($path), $filename);
             $task->attachment = $path . $filename;
         }
-        if ($request->priority) {
-            $task->priority = $request->priority;
-        }
+
         $task->assign_by = Auth::user()->id;
         $task->created_by = Auth::user()->id;
         $task->save();
@@ -91,7 +99,7 @@ class TaskController extends Controller
         $task->name = $request->name;
         $task->description = $request->description;
         $task->assign_date = $request->assign_date;
-        $task->assign_by = FacadesAuth::user()->id;
+        $task->assign_by = Auth::user()->id;
         $task->assign_to = $request->assign_to;
         $task->deadline = $request->deadline;
         $task->status = $request->status;
@@ -100,11 +108,11 @@ class TaskController extends Controller
         $task->feature_id = $request->feature_id;
         $task->priority = $request->priority;
         $task->completion_date = $request->completion_date;
-        $task->updated_by = FacadesAuth::user()->id;
+        $task->updated_by = Auth::user()->id;
         if ($request->hasFile('attachment')) {
             $file = $request->file('attachment');
             $filename = time() . '_' . $file->Extension();
-            $path = 'attachments/tasks/';
+            $path = 'uploads/tasks/';
             $file->move(public_path($path), $filename);
             $task->attachment = $path . $filename;
         }
@@ -124,12 +132,6 @@ class TaskController extends Controller
             'success' => true,
             'message' => 'Task deleted successfully!',
         ]);
-    }
-
-    public function show($id)
-    {
-        $task = Task::find($id);
-        return Inertia::render('Tasks/Show', ['task' => $task]);
     }
 
     public function status_change($id, Request $request)

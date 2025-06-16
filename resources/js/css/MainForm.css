@@ -1,0 +1,48 @@
+/* Form styles */
+.form-control,
+.form-select {
+    background-color: transparent;
+    color: var(--text-primary-light);
+    border: 1px solid var(--input-stroke);
+}
+
+.form-control:focus,
+.form-select:focus {
+    border-color: var(--primary-400);
+    box-shadow: 0 0 0 0.25rem var(--primary-light);
+}
+
+.form-label {
+    color: var(--text-primary-light);
+}
+
+.text-danger {
+    color: var(--danger-500) !important;
+}
+
+.task-group-modal .form-control[type="file"] {
+    border: 1px solid var(--input-stroke);
+    padding: 0.375rem 0.75rem;
+}
+
+/* Dark mode overrides */
+[data-theme="dark"] .form-control,
+[data-theme="dark"] .form-select {
+    background-color: transparent;
+    color: var(--text-primary-light);
+    border: 1px solid var(--input-stroke);
+}
+
+[data-theme="dark"] .form-control:focus,
+[data-theme="dark"] .form-select:focus {
+    border-color: var(--primary-400);
+    box-shadow: 0 0 0 0.25rem var(--primary-light);
+}
+
+[data-theme="dark"] .form-label {
+    color: var(--text-primary-light);
+}
+
+[data-theme="dark"] .task-group-modal .form-control[type="file"] {
+    border: 1px solid var(--input-stroke);
+}
