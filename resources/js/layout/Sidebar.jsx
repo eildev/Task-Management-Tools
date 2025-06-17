@@ -91,6 +91,19 @@ const Sidebar = ({
                                     Manage Task
                                 </Link>
                             </li>
+                            <li>
+                                <Link
+                                    href="/task-board"
+                                    className={
+                                        url === "/task-board"
+                                            ? "active-page"
+                                            : ""
+                                    }
+                                >
+                                    <i className="ri-circle-fill circle-icon text-success-main w-auto" />
+                                    Task Board
+                                </Link>
+                            </li>
                         </ul>
                     </li>
 

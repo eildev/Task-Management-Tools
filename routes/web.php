@@ -33,6 +33,7 @@ Route::middleware('auth')->group(function () {
     Route::controller(TaskController::class)->group(function () {
         Route::get('/task', 'index')->name('task.index');
         Route::get('/task-manage', 'manageTask')->name('task.manage');
+        Route::get('/task-board', 'taskBoard')->name('task.board');
         Route::post('/task/store', 'store')->name('task.store');
         Route::get('/tasks/{task}', 'show')->name('tasks.show');
         Route::get('/tasks/{task}/edit', 'edit')->name('tasks.edit');

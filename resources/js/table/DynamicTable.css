@@ -1,0 +1,14 @@
+.filter-row th {
+    padding: 8px;
+    background-color: #f8f9fa;
+}
+
+.filter-row select,
+.filter-row input {
+    width: 100%;
+    margin-bottom: 4px;
+}
+
+.table {
+    transition: none !important;
+}

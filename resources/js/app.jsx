@@ -4,8 +4,14 @@ import { createRoot } from "react-dom/client";
 import { resolvePageComponent } from "laravel-vite-plugin/inertia-helpers";
 import "react-quill/dist/quill.snow.css";
 import "react-toastify/dist/ReactToastify.css";
+import $ from "jquery";
+
+window.$ = window.jQuery = $;
 import "bootstrap/dist/js/bootstrap.bundle.min.js";
-import '../css/app.css';
+import "datatables.net";
+import "datatables.net-dt/css/dataTables.dataTables.css";
+import "datatables.net-dt/js/dataTables.dataTables.js";
+import "../css/app.css";
 const appName = import.meta.env.VITE_APP_NAME || "Laravel";
 
 createInertiaApp({

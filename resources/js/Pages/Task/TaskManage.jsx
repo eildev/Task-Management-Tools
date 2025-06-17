@@ -1,17 +1,15 @@
-import KanbanLayer from "@/components/KanbanLayer";
+import Breadcrumb from "@/components/Breadcrumb";
 import MasterLayout from "@/layout/MasterLayout";
-import { Breadcrumb } from "react-bootstrap";
+import TaskTable from "@/table/TaskTable";
 
-const TaskManage = () => {
+const TaskManage = ({ data }) => {
+    console.log(data);
     return (
         <>
-            {/* MasterLayout */}
             <MasterLayout>
-                {/* Breadcrumb */}
                 <Breadcrumb title="Task Manage" />
 
-                {/* KanbanLayer */}
-                <KanbanLayer />
+                <TaskTable data={data} />
             </MasterLayout>
         </>
     );

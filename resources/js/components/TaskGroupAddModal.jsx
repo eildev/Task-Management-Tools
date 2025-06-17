@@ -5,6 +5,7 @@ import { Button, Form, Modal } from "react-bootstrap";
 import toast from "react-hot-toast";
 import PropTypes from "prop-types";
 import "../css/TaskGroupAddModal.css";
+import { handleAttachmentChange } from "@/utils/handleAttachment";
 
 // Type mapping object
 const typeDisplayNames = {
@@ -37,29 +38,31 @@ const TaskGroupAddModal = ({ show, handleClose, type, onAddTaskGroup }) => {
         setData((prev) => ({ ...prev, type: type || "" }));
     }, [type]);
 
-    const handleAttachmentChange = (e) => {
-        const file = e.target.files[0];
-        setData((prev) => ({ ...prev, attachment: file }));
-        if (file) {
-            if (file.type.startsWith("image/")) {
-                const reader = new FileReader();
-                reader.onloadend = () => {
-                    setAttachmentPreview({ type: "image", url: reader.result });
-                };
-                reader.readAsDataURL(file);
-            } else if (file.type === "application/pdf") {
-                setAttachmentPreview({ type: "pdf", name: file.name });
-            } else {
-                setAttachmentPreview(null);
-                toast.error(
-                    "Invalid file type. Only JPG, PNG, or PDF allowed."
-                );
-            }
-        } else {
-            setAttachmentPreview(null);
-            setData((prev) => ({ ...prev, attachment: null }));
-        }
-    };
+    const allowedTypes = ["image/jpeg", "image/png", "application/pdf"];
+
+    // const handleAttachmentChange = (e) => {
+    //     const file = e.target.files[0];
+    //     setData((prev) => ({ ...prev, attachment: file }));
+    //     if (file) {
+    //         if (file.type.startsWith("image/")) {
+    //             const reader = new FileReader();
+    //             reader.onloadend = () => {
+    //                 setAttachmentPreview({ type: "image", url: reader.result });
+    //             };
+    //             reader.readAsDataURL(file);
+    //         } else if (file.type === "application/pdf") {
+    //             setAttachmentPreview({ type: "pdf", name: file.name });
+    //         } else {
+    //             setAttachmentPreview(null);
+    //             toast.error(
+    //                 "Invalid file type. Only JPG, PNG, or PDF allowed."
+    //             );
+    //         }
+    //     } else {
+    //         setAttachmentPreview(null);
+    //         setData((prev) => ({ ...prev, attachment: null }));
+    //     }
+    // };
 
     const handleInputChange = (e) => {
         const { name, value } = e.target;
@@ -214,7 +217,7 @@ const TaskGroupAddModal = ({ show, handleClose, type, onAddTaskGroup }) => {
                     </Form.Group>
 
                     {/* task attachment  */}
-                    <Form.Group className="mb-3" controlId="taskAttachment">
+                    {/* <Form.Group className="mb-3" controlId="taskAttachment">
                         <Form.Label>
                             Attachments{" "}
                             <span className="text-muted">
@@ -249,6 +252,55 @@ const TaskGroupAddModal = ({ show, handleClose, type, onAddTaskGroup }) => {
                                     <div className="d-flex align-items-center">
                                         <Icon
                                             icon="bi:file-earmark-pdf"
+                                            width="24"
+                                            className="me-2 text-danger"
+                                        />
+                                        <span>{attachmentPreview.name}</span>
+                                    </div>
+                                )}
+                            </div>
+                        )}
+                    </Form.Group> */}
+                    <Form.Group className="mb-3" controlId="taskAttachment">
+                        <Form.Label>
+                            Attachments{" "}
+                            <span className="text-muted">(JPG, PNG, PDF)</span>
+                        </Form.Label>
+                        <Form.Control
+                            type="file"
+                            accept="image/jpeg,image/png,application/pdf"
+                            onChange={(e) =>
+                                handleAttachmentChange(
+                                    e,
+                                    setData,
+                                    setAttachmentPreview,
+                                    allowedTypes
+                                )
+                            }
+                            isInvalid={!!errors.image}
+                        />
+                        <Form.Control.Feedback type="invalid">
+                            {errors.image}
+                        </Form.Control.Feedback>
+                        {attachmentPreview && (
+                            <div
+                                className="mt-3"
+                                style={{ maxWidth: "100%", overflow: "hidden" }}
+                            >
+                                {attachmentPreview.type === "image" ? (
+                                    <img
+                                        src={attachmentPreview.url}
+                                        alt="Attachment Preview"
+                                        style={{
+                                            width: "100%",
+                                            maxHeight: "200px",
+                                            objectFit: "contain",
+                                        }}
+                                    />
+                                ) : (
+                                    <div className="d-flex align-items-center">
+                                        <Icon
+                                            icon={attachmentPreview.icon}
                                             width="24"
                                             className="me-2 text-danger"
                                         />

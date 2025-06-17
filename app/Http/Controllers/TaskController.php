@@ -20,7 +20,16 @@ class TaskController extends Controller
 
     public function manageTask()
     {
-        return Inertia::render('Task/TaskManage');
+        $data = Task::with('assignUser')->get()->toArray();
+
+        return Inertia::render('Task/TaskManage', [
+            'data' => $data,
+        ]);
+    }
+
+    public function taskBoard()
+    {
+        return Inertia::render('Task/TaskBoard');
     }
 
     public function show($id)
@@ -42,7 +51,7 @@ class TaskController extends Controller
             'assign_date' => 'nullable|date',
             'assign_to' => 'nullable|string|max:255',
             'deadline' => 'nullable|date',
-            'status' => 'required|in:pending,inprogress,completed,cancelled,hold,rejected,approved,issues',
+            'status' => 'nullable|in:pending,inprogress,completed,cancelled,hold,rejected,approved,issues',
             'project_id' => 'required|exists:task_groups,id',
             'module_id' => 'required|exists:task_groups,id',
             'submodule_id' => 'nullable|exists:task_groups,id',
@@ -50,6 +59,9 @@ class TaskController extends Controller
             'completion_date' => 'nullable|date',
             'priority' => 'nullable|in:low,medium,high',
         ]);
+
+        $validated['status'] = $validated['status'] ?? 'pending';
+        $validated['priority'] = $validated['priority'] ?? 'low';
 
         $task = new Task($validated);
 
