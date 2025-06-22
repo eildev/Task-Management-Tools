@@ -10,12 +10,6 @@ use Inertia\Inertia;
 
 class TaskGroupController extends Controller
 {
-    public function index()
-    {
-        $taskGroups = TaskGroup::all();
-        return Inertia::render('TaskGroups/Index', ['taskGroups' => $taskGroups]);
-    }
-
     public function create()
     {
         return Inertia::render('TaskGroups/Create');
@@ -52,7 +46,7 @@ class TaskGroupController extends Controller
             'type.required' => 'The type is required.',
             'type.string' => 'The type must be a string.',
             'type.max' => 'The type may not be greater than 255 characters.',
-            'end_date.after_or_equal' => 'The end date must be a date after or equal to the start date.',
+            'end_date.after_or_equal' => 'The end date must be a date after or same as to the start date.',
             'image.file' => 'The attachment must be a valid file.',
             'image.mimes' => 'The attachment must be a file of type: jpeg, png, jpg, pdf.',
             'image.max' => 'The attachment may not be greater than 2048 kilobytes.',
@@ -101,6 +95,20 @@ class TaskGroupController extends Controller
         ], 201);
     }
 
+
+    public function view()
+    {
+        $projects = TaskGroup::where("type", 'project')->get();
+        $modules = TaskGroup::where("type", 'module')->get();
+        $subModules = TaskGroup::where("type", 'submodule')->get();
+        $features = TaskGroup::where("type", 'feature')->get();
+        return Inertia::render('TaskGroups/Index', [
+            'projects' => $projects,
+            'modules' => $modules,
+            'subModules' => $subModules,
+            'features' => $features,
+        ]);
+    }
 
     public function edit($id)
     {

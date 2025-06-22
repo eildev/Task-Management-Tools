@@ -21,16 +21,16 @@ const TaskTable = ({ data }) => {
 
     // Function to open modal
     const handleViewClick = (e, task) => {
-        e.preventDefault(); // ডিফল্ট রিলোড প্রতিরোধ
+        e.preventDefault();
         console.log("hello world", isModalOpen);
-        setSelectedTask(task); // সিলেক্টেড টাস্ক সেট
+        setSelectedTask(task);
         setIsModalOpen(true);
     };
 
     // Function to close modal
     const handleCloseModal = () => {
         setIsModalOpen(false);
-        setSelectedTask(null); // টাস্ক রিসেট
+        setSelectedTask(null);
     };
 
     // Function to trigger file download
@@ -39,7 +39,7 @@ const TaskTable = ({ data }) => {
         if (imageUrl) {
             const link = document.createElement("a");
             link.href = imageUrl;
-            link.download = imageUrl.split("/").pop() || "image.png"; // ফাইল নাম নির্ধারণ
+            link.download = imageUrl.split("/").pop() || "image.png";
             document.body.appendChild(link);
             link.click();
             document.body.removeChild(link);

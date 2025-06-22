@@ -1,56 +1,62 @@
 import { Icon } from "@iconify/react";
 
-const UnitCountOne = ({ taskGroups }) => {
-    const taskGroupConfig = [
+const DashboardTaskCard = ({ tasks }) => {
+    const taskConfig = [
         {
-            key: "totalTaskGroup",
-            title: "Total Task Group",
-            bgClass: "bg-gradient-start-5",
-            icon: "gridicons:multiple-users",
-            iconBg: "bg-warning",
-        },
-        {
-            key: "projects",
-            title: "Total Projects",
+            key: "totalTask",
+            title: "Total Tasks",
             bgClass: "bg-gradient-start-1",
-            icon: "gridicons:multiple-users",
+            icon: "fa-solid:tasks",
             iconBg: "bg-cyan",
         },
         {
-            key: "modules",
-            title: "Total Modules",
+            key: "completedTask",
+            title: "Completed Tasks",
             bgClass: "bg-gradient-start-2",
-            icon: "fa-solid:award",
-            iconBg: "bg-purple",
+            icon: "fa-solid:check-circle",
+            iconBg: "bg-success-main",
         },
         {
-            key: "subModules",
-            title: "Total Sub Modules",
+            key: "inprogressTask",
+            title: "In Progress Tasks",
             bgClass: "bg-gradient-start-3",
-            icon: "fluent:people-20-filled",
+            icon: "fa-solid:spinner",
             iconBg: "bg-info",
         },
         {
-            key: "features",
-            title: "Total Features",
+            key: "approvedTask",
+            title: "Approved Tasks",
             bgClass: "bg-gradient-start-4",
-            icon: "solar:wallet-bold",
-            iconBg: "bg-success-main",
+            icon: "fa-solid:thumbs-up",
+            iconBg: "bg-purple",
+        },
+        {
+            key: "pendingTask",
+            title: "Pending Tasks",
+            bgClass: "bg-gradient-start-5",
+            icon: "fa-solid:clock",
+            iconBg: "bg-warning",
+        },
+        {
+            key: "unassignTask",
+            title: "Unassigned Tasks",
+            bgClass: "bg-gradient-start-6",
+            icon: "fa-solid:user-slash",
+            iconBg: "bg-danger",
         },
     ];
+
     return (
         <div className="row row-cols-xxxl-5 row-cols-lg-4 row-cols-sm-2 row-cols-1 gy-4">
-            {taskGroupConfig.map((config, index) => {
-                const { total, lastSevenDays } = taskGroups[config.key] || {
+            {taskConfig.map((config) => {
+                const { total, lastSevenDays } = tasks[config.key] || {
                     total: 0,
                     lastSevenDays: 0,
                 };
                 return (
                     <div className="col" key={config.key}>
                         <div
-                            className={`card shadow-none border bg-gradient-start-${
-                                index + 1
-                            } h-100`}
+                            className={`card shadow-none border ${config.bgClass} h-100`}
                         >
                             <div className="card-body p-20">
                                 <div className="d-flex flex-wrap align-items-center justify-content-between gap-3">
@@ -99,4 +105,4 @@ const UnitCountOne = ({ taskGroups }) => {
     );
 };
 
-export default UnitCountOne;
+export default DashboardTaskCard;

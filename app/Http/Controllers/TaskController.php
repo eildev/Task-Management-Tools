@@ -29,7 +29,18 @@ class TaskController extends Controller
 
     public function taskBoard()
     {
-        return Inertia::render('Task/TaskBoard');
+        // $tasks = Task::where('assign_to', Auth::user()->id)->get();
+        $inProgress = Task::where("status", 'inprogress')->where('assign_to', Auth::user()->id)->get();
+        $completed = Task::where("status", 'completed')->where('assign_to', Auth::user()->id)->get();
+        $pending = Task::where("status", 'pending')->where('assign_to', Auth::user()->id)->get();
+
+        $data = [
+            "inProgress" => $inProgress,
+            "completed" => $completed,
+            "pending" => $pending,
+        ];
+
+        return Inertia::render('Task/TaskBoard',  $data);
     }
 
     public function show($id)

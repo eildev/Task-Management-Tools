@@ -26,9 +26,7 @@ Route::get('/', function () {
 Route::middleware('auth')->group(function () {
 
 
-    Route::get('/admindashboard', function () {
-        return Inertia::render('Home');
-    })->name('adminDashboard');
+    Route::get('/admindashboard', [DashboardController::class, 'index'])->name('adminDashboard');
 
     Route::controller(TaskController::class)->group(function () {
         Route::get('/task', 'index')->name('task.index');
@@ -44,6 +42,7 @@ Route::middleware('auth')->group(function () {
     Route::controller(TaskGroupController::class)->group(function () {
         Route::get('/task-groups/create', 'create')->name('task-groups.create');
         Route::post('/task-groups', 'store')->name('task-groups.store');
+        Route::get('/task-groups/view', 'view')->name('task.groups.view');
         Route::get('/task-groups/{taskGroup}', 'show')->name('task-groups.show');
         Route::get('/task-groups/{taskGroup}/edit', 'edit')->name('task-groups.edit');
         Route::put('/task-groups/{taskGroup}', 'update')->name('task-groups.update');
