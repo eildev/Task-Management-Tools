@@ -93,6 +93,19 @@ const Sidebar = ({
                             </li>
                             <li>
                                 <Link
+                                    href="/task-groups/view"
+                                    className={
+                                        url === "/task-groups/view"
+                                            ? "active-page"
+                                            : ""
+                                    }
+                                >
+                                    <i className="ri-circle-fill circle-icon text-warning-main w-auto" />
+                                    Manage Task Group
+                                </Link>
+                            </li>
+                            <li>
+                                <Link
                                     href="/task-board"
                                     className={
                                         url === "/task-board"

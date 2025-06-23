@@ -10,11 +10,6 @@ use Inertia\Inertia;
 
 class TaskGroupController extends Controller
 {
-    public function create()
-    {
-        return Inertia::render('TaskGroups/Create');
-    }
-
     public function store(Request $request)
     {
         // Define type-based name field labels

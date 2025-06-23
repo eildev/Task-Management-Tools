@@ -36,20 +36,18 @@ class AuthenticatedSessionController extends Controller
         // $request->session()->regenerate();
 
         // return redirect()->intended(route('dashboard', absolute: false));
-        $authuser=User::where('email', $request->email)->first();
-        if($authuser->role == 'admin'||$authuser->role == 'superadmin'){
-            if(Auth::attempt(['email' => $request->email, 'password' => $request->password])){
+        $authuser = User::where('email', $request->email)->first();
+        if ($authuser->role == 'admin' || $authuser->role == 'superadmin') {
+            if (Auth::attempt(['email' => $request->email, 'password' => $request->password])) {
                 $request->session()->regenerate();
                 return redirect()->intended(route('adminDashboard', absolute: false));
             }
-        }
-        elseif($authuser->role == 'user'){
-            if(Auth::attempt(['email' => $request->email, 'password' => $request->password])){
+        } elseif ($authuser->role == 'user') {
+            if (Auth::attempt(['email' => $request->email, 'password' => $request->password])) {
                 $request->session()->regenerate();
-                return redirect()->intended(route('UserDashboard', absolute: false));
+                return redirect()->intended(route('adminDashboard', absolute: false));
             }
-        }
-        else{
+        } else {
             return redirect()->back()->withErrors(['email' => 'Invalid credentials']);
         }
     }

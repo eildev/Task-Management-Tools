@@ -15,24 +15,6 @@ const TaskTable = ({ data }) => {
         };
     }, []);
 
-    // State for modal and selected task
-    const [isModalOpen, setIsModalOpen] = useState(false);
-    const [selectedTask, setSelectedTask] = useState(null);
-
-    // Function to open modal
-    const handleViewClick = (e, task) => {
-        e.preventDefault();
-        console.log("hello world", isModalOpen);
-        setSelectedTask(task);
-        setIsModalOpen(true);
-    };
-
-    // Function to close modal
-    const handleCloseModal = () => {
-        setIsModalOpen(false);
-        setSelectedTask(null);
-    };
-
     // Function to trigger file download
     const handleDownload = (e, imageUrl) => {
         e.preventDefault();
@@ -99,7 +81,7 @@ const TaskTable = ({ data }) => {
                                             className="flex-shrink-0 me-12 radius-8"
                                         />
                                         <h6 className="text-md mb-0 fw-medium flex-grow-1">
-                                            {task?.assign_user?.name ?? "N/A"}
+                                            {task?.assigned_user?.name ?? "N/A"}
                                         </h6>
                                     </div>
                                 </td>
@@ -148,16 +130,13 @@ const TaskTable = ({ data }) => {
                                 </td>
                                 <td>
                                     <Link
-                                        to="#"
-                                        onClick={(e) =>
-                                            handleViewClick(e, task)
-                                        }
+                                        href={`tasks/${task.id}`}
                                         className="w-32-px h-32-px me-8 bg-primary-light text-primary-600 rounded-circle d-inline-flex align-items-center justify-content-center"
                                     >
                                         <Icon icon="iconamoon:eye-light" />
                                     </Link>
                                     <Link
-                                        to="#"
+                                        href={`/tasks/edit/${task.id}`}
                                         className="w-32-px h-32-px me-8 bg-success-focus text-success-main rounded-circle d-inline-flex align-items-center justify-content-center"
                                     >
                                         <Icon icon="lucide:edit" />
@@ -189,178 +168,6 @@ const TaskTable = ({ data }) => {
                         ))}
                     </tbody>
                 </table>
-
-                {/* Modal */}
-                {isModalOpen && selectedTask && (
-                    <div
-                        className="modal fade show d-block"
-                        tabIndex="-1"
-                        style={{ backgroundColor: "rgba(0, 0, 0, 0.5)" }}
-                    >
-                        <div className="modal-dialog modal-dialog-centered modal-xl">
-                            <div className="modal-content">
-                                <div className="modal-header">
-                                    <h5 className="modal-title">
-                                        Task Details - {selectedTask?.name}
-                                    </h5>
-                                    <button
-                                        type="button"
-                                        className="btn-close"
-                                        onClick={handleCloseModal}
-                                    ></button>
-                                </div>
-                                <div className="modal-body p-4">
-                                    <div className="row g-3">
-                                        <div className="col-12">
-                                            <div className="card shadow-sm">
-                                                <div className="card-body">
-                                                    <h6 className="card-subtitle mb-2 text-muted">
-                                                        Task Information
-                                                    </h6>
-                                                    <div className="row g-2">
-                                                        <div className="col-6">
-                                                            <p className="mb-1">
-                                                                <strong>
-                                                                    Task Name:
-                                                                </strong>{" "}
-                                                                {selectedTask?.name ??
-                                                                    "N/A"}
-                                                            </p>
-                                                        </div>
-                                                        <div className="col-6">
-                                                            <p className="mb-1">
-                                                                <strong>
-                                                                    Assigned To:
-                                                                </strong>{" "}
-                                                                {selectedTask
-                                                                    ?.assign_user
-                                                                    ?.name ??
-                                                                    "N/A"}
-                                                            </p>
-                                                        </div>
-                                                        <div className="col-6">
-                                                            <p className="mb-1">
-                                                                <strong>
-                                                                    Assign Date:
-                                                                </strong>{" "}
-                                                                {formatDate(
-                                                                    selectedTask?.assign_date ??
-                                                                        ""
-                                                                )}
-                                                            </p>
-                                                        </div>
-                                                        <div className="col-6">
-                                                            <p className="mb-1">
-                                                                <strong>
-                                                                    Completion
-                                                                    Date:
-                                                                </strong>{" "}
-                                                                {formatDate(
-                                                                    selectedTask?.completion_date ??
-                                                                        ""
-                                                                )}
-                                                            </p>
-                                                        </div>
-                                                        <div className="col-6">
-                                                            <p className="mb-1">
-                                                                <strong>
-                                                                    Priority:
-                                                                </strong>{" "}
-                                                                <span
-                                                                    className={`px-2 py-1 rounded-pill fw-medium text-sm text-capitalize ${
-                                                                        {
-                                                                            low: "bg-danger-focus text-danger-main",
-                                                                            high: "bg-success-focus text-success-main",
-                                                                            medium: "bg-warning-focus text-warning-main",
-                                                                        }[
-                                                                            selectedTask
-                                                                                ?.priority
-                                                                        ] ||
-                                                                        "bg-light text-dark"
-                                                                    }`}
-                                                                >
-                                                                    {selectedTask?.priority ??
-                                                                        "N/A"}
-                                                                </span>
-                                                            </p>
-                                                        </div>
-                                                        <div className="col-6">
-                                                            <p className="mb-1">
-                                                                <strong>
-                                                                    Status:
-                                                                </strong>{" "}
-                                                                <span
-                                                                    className={`px-2 py-1 rounded-pill fw-medium text-sm text-capitalize ${
-                                                                        {
-                                                                            pending:
-                                                                                "bg-warning-focus text-warning-main",
-                                                                            inprogress:
-                                                                                "bg-info-focus text-info-main",
-                                                                            completed:
-                                                                                "bg-success-focus text-success-main",
-                                                                            cancelled:
-                                                                                "bg-danger-focus text-danger-main",
-                                                                            hold: "bg-secondary-focus text-secondary-main",
-                                                                            rejected:
-                                                                                "bg-danger-dark text-danger-dark",
-                                                                            approved:
-                                                                                "bg-success-light text-success-light",
-                                                                            issues: "bg-warning-dark text-warning-dark",
-                                                                        }[
-                                                                            selectedTask
-                                                                                ?.status
-                                                                        ] ||
-                                                                        "bg-light text-dark"
-                                                                    }`}
-                                                                >
-                                                                    {selectedTask?.status ??
-                                                                        "N/A"}
-                                                                </span>
-                                                            </p>
-                                                        </div>
-                                                    </div>
-                                                    {selectedTask?.assign_user
-                                                        ?.image && (
-                                                        <div className="mt-3">
-                                                            <p className="mb-1">
-                                                                <strong>
-                                                                    Assigned
-                                                                    User Image:
-                                                                </strong>
-                                                            </p>
-                                                            <img
-                                                                src={
-                                                                    selectedTask
-                                                                        ?.assign_user
-                                                                        ?.image
-                                                                }
-                                                                alt="User"
-                                                                className="img-fluid rounded"
-                                                                style={{
-                                                                    maxWidth:
-                                                                        "150px",
-                                                                }}
-                                                            />
-                                                        </div>
-                                                    )}
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div className="modal-footer">
-                                    <button
-                                        type="button"
-                                        className="btn btn-secondary"
-                                        onClick={handleCloseModal}
-                                    >
-                                        Close
-                                    </button>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                )}
             </div>
         </div>
     );

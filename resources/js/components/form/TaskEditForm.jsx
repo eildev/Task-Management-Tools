@@ -1,37 +1,41 @@
-import React, { useState, useEffect } from "react";
+import { useEffect, useState } from "react";
 import axios from "axios";
-import SelectWithButton from "./SelectWithButton";
-import SelectSearch from "./SelectSearch";
-import TaskGroupAddModal from "./TaskGroupAddModal";
 import toast from "react-hot-toast";
-import "../css/MainForm.css";
+import "../../css/MainForm.css";
 import { handleAttachmentChange } from "@/utils/handleAttachment";
 import { Icon } from "@iconify/react";
+import SelectWithButton from "../SelectWithButton";
+import SelectSearch from "../SelectSearch";
+import TaskGroupAddModal from "../TaskGroupAddModal";
 
-const MainForm = ({ taskGroups: initialTaskGroups, users }) => {
+const TaskEditForm = ({ task, taskGroups: initialTaskGroups, users }) => {
     const [taskGroups, setTaskGroups] = useState(initialTaskGroups || []);
     const [showModal, setShowModal] = useState(false);
     const [type, setType] = useState("");
     const [errors, setErrors] = useState({});
     const [isSubmitting, setIsSubmitting] = useState(false);
-    const [attachmentPreview, setAttachmentPreview] = useState(null);
+    const [attachmentPreview, setAttachmentPreview] = useState(
+        typeof task?.attachment === "string" && task.attachment
+            ? `/storage/${task.attachment}`
+            : null
+    );
 
-    // Form state
+    // Form state initialized with task data
     const [formData, setFormData] = useState({
-        name: "",
-        project_id: "",
-        module_id: "",
-        submodule_id: "",
-        feature_id: "",
-        assign_date: "",
-        deadline: "",
-        assign_to: "",
-        completion_date: "",
-        description: "",
-        notes: "",
+        name: task?.name || "",
+        project_id: task?.project_id?.toString() || "",
+        module_id: task?.module_id?.toString() || "",
+        submodule_id: task?.submodule_id?.toString() || "",
+        feature_id: task?.feature_id?.toString() || "",
+        assign_date: task?.assign_date || "",
+        deadline: task?.deadline || "",
+        assign_to: task?.assign_to?.toString() || "",
+        completion_date: task?.completion_date || "",
+        description: task?.description || "",
+        notes: task?.remarks || "",
         attachment: null,
-        status: "",
-        priority: "",
+        status: task?.status || "",
+        priority: task?.priority || "",
     });
 
     // Sync taskGroups
@@ -40,24 +44,33 @@ const MainForm = ({ taskGroups: initialTaskGroups, users }) => {
     }, [initialTaskGroups]);
 
     // Map task groups to options
-    const projects = taskGroups
-        .filter((task) => task.type === "project")
-        .map((task) => ({ value: task.id.toString(), label: task.name }));
-    const modules = taskGroups
-        .filter((task) => task.type === "module")
-        .map((task) => ({ value: task.id.toString(), label: task.name }));
-    const submodules = taskGroups
-        .filter((task) => task.type === "submodule")
-        .map((task) => ({ value: task.id.toString(), label: task.name }));
-    const features = taskGroups
-        .filter((task) => task.type === "feature")
-        .map((task) => ({ value: task.id.toString(), label: task.name }));
+    const projects =
+        taskGroups
+            ?.filter((task) => task.type === "project")
+            .map((task) => ({ value: task.id.toString(), label: task.name })) ||
+        [];
+    const modules =
+        taskGroups
+            ?.filter((task) => task.type === "module")
+            .map((task) => ({ value: task.id.toString(), label: task.name })) ||
+        [];
+    const submodules =
+        taskGroups
+            ?.filter((task) => task.type === "submodule")
+            .map((task) => ({ value: task.id.toString(), label: task.name })) ||
+        [];
+    const features =
+        taskGroups
+            ?.filter((task) => task.type === "feature")
+            .map((task) => ({ value: task.id.toString(), label: task.name })) ||
+        [];
 
     // Map users to options
-    const userOptions = users.map((user) => ({
-        value: user.id.toString(),
-        label: user.name,
-    }));
+    const userOptions =
+        users?.map((user) => ({
+            value: user.id.toString(),
+            label: user.name,
+        })) || [];
 
     // Status options
     const statusOptions = [
@@ -71,7 +84,7 @@ const MainForm = ({ taskGroups: initialTaskGroups, users }) => {
         { value: "issues", label: "Issues" },
     ];
 
-    // Priority options (optional)
+    // Priority options
     const priorityOptions = [
         { value: "low", label: "Low" },
         { value: "medium", label: "Medium" },
@@ -124,9 +137,8 @@ const MainForm = ({ taskGroups: initialTaskGroups, users }) => {
         }
     };
 
-    // Handle select changes (for SelectWithButton and SelectSearch)
+    // Handle select changes
     const handleSelectChange = (name, value) => {
-        console.log(`Setting ${name} to ${value}`);
         setFormData((prev) => ({ ...prev, [name]: value }));
         setErrors((prev) => ({ ...prev, [name]: "" }));
     };
@@ -134,7 +146,6 @@ const MainForm = ({ taskGroups: initialTaskGroups, users }) => {
     // Handle form submission
     const handleSubmit = async (e) => {
         e.preventDefault();
-        console.log("Form Data:", formData);
         if (!validateForm()) {
             toast.error("Please fix the form errors.");
             return;
@@ -149,7 +160,7 @@ const MainForm = ({ taskGroups: initialTaskGroups, users }) => {
         });
 
         try {
-            const response = await axios.post("/task/store", form, {
+            const response = await axios.post(`/task/update/${task.id}`, form, {
                 headers: {
                     "Content-Type": "multipart/form-data",
                     "X-CSRF-TOKEN": document
@@ -158,24 +169,7 @@ const MainForm = ({ taskGroups: initialTaskGroups, users }) => {
                 },
             });
             toast.success(response.data.message);
-            setFormData({
-                name: "",
-                project_id: "",
-                module_id: "",
-                submodule_id: "",
-                feature_id: "",
-                assign_date: "",
-                deadline: "",
-                assign_to: "",
-                completion_date: "",
-                description: "",
-                notes: "",
-                attachment: null,
-                status: "",
-                priority: "",
-            });
-            setAttachmentPreview(null);
-            setErrors({});
+            window.location.href = "/tasks";
         } catch (error) {
             if (error.response?.status === 422) {
                 const serverErrors = error.response.data.errors;
@@ -184,7 +178,7 @@ const MainForm = ({ taskGroups: initialTaskGroups, users }) => {
                     toast.error(err[0])
                 );
             } else {
-                toast.error("Failed to create task. Please try again.");
+                toast.error("Failed to update task. Please try again.");
             }
         } finally {
             setIsSubmitting(false);
@@ -206,7 +200,7 @@ const MainForm = ({ taskGroups: initialTaskGroups, users }) => {
         <div className="col-md-12">
             <div className="card">
                 <div className="card-header">
-                    <h6 className="card-title mb-0">Create Task</h6>
+                    <h6 className="card-title mb-0">Edit Task</h6>
                 </div>
                 <div className="card-body">
                     <form className="row gy-3" onSubmit={handleSubmit}>
@@ -449,7 +443,7 @@ const MainForm = ({ taskGroups: initialTaskGroups, users }) => {
                                 Remarks Or Notes
                             </label>
                             <textarea
-                                name="notes"
+                                name="remarks"
                                 className="form-control resize-none"
                                 rows={4}
                                 cols={50}
@@ -479,7 +473,7 @@ const MainForm = ({ taskGroups: initialTaskGroups, users }) => {
                                     {errors.attachment}
                                 </div>
                             )}
-                            {attachmentPreview && (
+                            {attachmentPreview ? (
                                 <div
                                     className="mt-3"
                                     style={{
@@ -487,9 +481,15 @@ const MainForm = ({ taskGroups: initialTaskGroups, users }) => {
                                         overflow: "hidden",
                                     }}
                                 >
-                                    {attachmentPreview.type === "image" ? (
+                                    {typeof attachmentPreview === "string" &&
+                                    (attachmentPreview.startsWith(
+                                        "/storage/"
+                                    ) ||
+                                        attachmentPreview.startsWith(
+                                            "data:image"
+                                        )) ? (
                                         <img
-                                            src={attachmentPreview.url}
+                                            src={attachmentPreview}
                                             alt="Attachment Preview"
                                             style={{
                                                 width: "100%",
@@ -500,17 +500,40 @@ const MainForm = ({ taskGroups: initialTaskGroups, users }) => {
                                     ) : (
                                         <div className="d-flex align-items-center">
                                             <Icon
-                                                icon={attachmentPreview.icon}
+                                                icon="bi:file-earmark-text"
                                                 width="24"
                                                 className="me-2 text-danger"
                                             />
                                             <span>
-                                                {attachmentPreview.name}
+                                                {typeof attachmentPreview ===
+                                                "string"
+                                                    ? attachmentPreview
+                                                          .split("/")
+                                                          .pop()
+                                                    : "Unknown file"}
                                             </span>
                                         </div>
                                     )}
                                 </div>
-                            )}
+                            ) : task.attachment ? (
+                                <div
+                                    className="mt-3"
+                                    style={{
+                                        maxWidth: "100%",
+                                        overflow: "hidden",
+                                    }}
+                                >
+                                    <img
+                                        src={`/storage/${task.attachment}`}
+                                        alt="Current Attachment"
+                                        style={{
+                                            width: "100%",
+                                            maxHeight: "200px",
+                                            objectFit: "contain",
+                                        }}
+                                    />
+                                </div>
+                            ) : null}
                         </div>
                         <div className="col-md-12">
                             <button
@@ -518,7 +541,7 @@ const MainForm = ({ taskGroups: initialTaskGroups, users }) => {
                                 className="btn btn-primary"
                                 disabled={isSubmitting}
                             >
-                                {isSubmitting ? "Saving..." : "Save Task"}
+                                {isSubmitting ? "Updating..." : "Update Task"}
                             </button>
                         </div>
                     </form>
@@ -534,4 +557,4 @@ const MainForm = ({ taskGroups: initialTaskGroups, users }) => {
     );
 };
 
-export default MainForm;
+export default TaskEditForm;

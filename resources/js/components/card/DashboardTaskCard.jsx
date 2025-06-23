@@ -1,6 +1,6 @@
 import { Icon } from "@iconify/react";
 
-const DashboardTaskCard = ({ tasks }) => {
+const DashboardTaskCard = ({ tasks, userRole }) => {
     const taskConfig = [
         {
             key: "totalTask",
@@ -24,31 +24,67 @@ const DashboardTaskCard = ({ tasks }) => {
             iconBg: "bg-info",
         },
         {
+            key: "pendingTask",
+            title: "Pending Tasks",
+            bgClass: "bg-gradient-start-4",
+            icon: "fa-solid:clock",
+            iconBg: "bg-warning",
+        },
+        {
+            key: "issuesTask",
+            title: "Issue Tasks",
+            bgClass: "bg-gradient-start-5",
+            icon: "fa-solid:exclamation-triangle",
+            iconBg: "bg-danger",
+        },
+        {
+            key: "cancelledTask",
+            title: "Cancelled Tasks",
+            bgClass: "bg-gradient-start-1",
+            icon: "fa-solid:ban",
+            iconBg: "bg-danger-main",
+        },
+        {
+            key: "holdTask",
+            title: "Hold Tasks",
+            bgClass: "bg-gradient-start-2",
+            icon: "fa-solid:pause",
+            iconBg: "bg-gray-500",
+        },
+        {
+            key: "rejectedTask",
+            title: "Rejected Tasks",
+            bgClass: "bg-gradient-start-3",
+            icon: "fa-solid:times-circle",
+            iconBg: "bg-danger",
+        },
+        {
             key: "approvedTask",
             title: "Approved Tasks",
             bgClass: "bg-gradient-start-4",
             icon: "fa-solid:thumbs-up",
             iconBg: "bg-purple",
-        },
-        {
-            key: "pendingTask",
-            title: "Pending Tasks",
-            bgClass: "bg-gradient-start-5",
-            icon: "fa-solid:clock",
-            iconBg: "bg-warning",
+            adminOnly: true, // Only for admin
         },
         {
             key: "unassignTask",
             title: "Unassigned Tasks",
-            bgClass: "bg-gradient-start-6",
+            bgClass: "bg-gradient-start-5",
             icon: "fa-solid:user-slash",
             iconBg: "bg-danger",
+            adminOnly: true, // Only for admin
         },
     ];
 
+    // Filter taskConfig based on user role
+    const filteredTaskConfig =
+        userRole === "admin" || userRole === "superadmin"
+            ? taskConfig
+            : taskConfig.filter((config) => !config.adminOnly);
+
     return (
         <div className="row row-cols-xxxl-5 row-cols-lg-4 row-cols-sm-2 row-cols-1 gy-4">
-            {taskConfig.map((config) => {
+            {filteredTaskConfig.map((config) => {
                 const { total, lastSevenDays } = tasks[config.key] || {
                     total: 0,
                     lastSevenDays: 0,

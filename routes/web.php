@@ -34,13 +34,12 @@ Route::middleware('auth')->group(function () {
         Route::get('/task-board', 'taskBoard')->name('task.board');
         Route::post('/task/store', 'store')->name('task.store');
         Route::get('/tasks/{task}', 'show')->name('tasks.show');
-        Route::get('/tasks/{task}/edit', 'edit')->name('tasks.edit');
-        Route::put('/tasks/{task}', 'update')->name('tasks.update');
+        Route::get('/tasks/edit/{task}', 'edit')->name('tasks.edit');
+        Route::post('/task/update/{id}', 'update')->name('tasks.update');
         Route::delete('/tasks/{task}', 'destroy')->name('tasks.destroy');
-        Route::get('/tasks/{task}', 'status_change')->name('tasks.status_change');
+        Route::patch('/tasks/{id}/status', 'updateTaskStatus')->name('tasks.status.update');
     });
     Route::controller(TaskGroupController::class)->group(function () {
-        Route::get('/task-groups/create', 'create')->name('task-groups.create');
         Route::post('/task-groups', 'store')->name('task-groups.store');
         Route::get('/task-groups/view', 'view')->name('task.groups.view');
         Route::get('/task-groups/{taskGroup}', 'show')->name('task-groups.show');

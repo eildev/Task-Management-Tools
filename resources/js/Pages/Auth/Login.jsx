@@ -6,8 +6,11 @@ import TextInput from "@/components/TextInput";
 import { Head, Link, useForm } from "@inertiajs/react";
 import { route } from "ziggy-js";
 import { Icon } from "@iconify/react";
+import { useState } from "react";
 
 const Login = ({ status, canResetPassword, canRegister }) => {
+    const [passwordVisible, setPasswordVisible] = useState(false);
+
     const { data, setData, post, processing, errors, reset } = useForm({
         email: "",
         password: "",
@@ -20,6 +23,8 @@ const Login = ({ status, canResetPassword, canRegister }) => {
             onFinish: () => reset("password"),
         });
     };
+
+    const togglePasswordVisibility = () => setPasswordVisible(!passwordVisible);
 
     return (
         <>
@@ -78,17 +83,36 @@ const Login = ({ status, canResetPassword, canRegister }) => {
                                     htmlFor="password"
                                     value="Password"
                                 />
-                                <TextInput
-                                    id="password"
-                                    type="password"
-                                    name="password"
-                                    value={data.password}
-                                    className="mt-1 block w-full"
-                                    autoComplete="current-password"
-                                    onChange={(e) =>
-                                        setData("password", e.target.value)
-                                    }
-                                />
+                                <div className="relative">
+                                    <TextInput
+                                        id="password"
+                                        type={
+                                            passwordVisible
+                                                ? "text"
+                                                : "password"
+                                        }
+                                        name="password"
+                                        value={data.password}
+                                        className="mt-1 block w-full"
+                                        autoComplete="current-password"
+                                        onChange={(e) =>
+                                            setData("password", e.target.value)
+                                        }
+                                    />
+                                    <span
+                                        onClick={togglePasswordVisibility}
+                                        className="absolute right-3 top-1/2 -translate-y-1/2 cursor-pointer text-gray-500"
+                                    >
+                                        <Icon
+                                            icon={
+                                                passwordVisible
+                                                    ? "ri:eye-off-line"
+                                                    : "ri:eye-line"
+                                            }
+                                        />
+                                    </span>
+                                </div>
+
                                 <InputError
                                     message={errors.password}
                                     className="mt-1 text-red-500 text-sm"
