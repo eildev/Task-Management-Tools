@@ -1,13 +1,17 @@
 import { useEffect } from "react";
 import TaskGroupTableRow from "./TaskGroupTableRow";
 import $ from "jquery";
+import { usePage } from "@inertiajs/react";
 
-const TaskGroupTable = ({ projects, modules, subModules, features }) => {
+const TaskGroupTable = () => {
+    const { props } = usePage();
+    const { projects, modules, subModules, features } = props;
+
     useEffect(() => {
         // Initialize DataTables for each table
         const projectTable = $("#projectTable").DataTable({
             pageLength: 10,
-            destroy: true, // Ensure reinitialization is allowed
+            destroy: true,
         });
         const moduleTable = $("#moduleTable").DataTable({
             pageLength: 10,

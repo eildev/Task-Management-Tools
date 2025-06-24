@@ -13,11 +13,16 @@ import {
     getPaginationRowModel,
     flexRender,
 } from "@tanstack/react-table";
+import * as XLSX from "xlsx";
 import "./TaskTable.css";
+import jsPDF from "jspdf";
+import autoTable from "jspdf-autotable";
 
 const TaskTable = () => {
     const { props } = usePage();
     const { data: initialData } = props;
+
+    console.log(initialData);
 
     // Local state to manage table data, filter, sorting, and pagination
     const [data, setData] = useState(initialData);
@@ -91,6 +96,137 @@ const TaskTable = () => {
         }
     };
 
+    // Function to export table to PDF
+    const exportToPDF = () => {
+        const doc = new jsPDF();
+
+        // Apply autoTable to jsPDF instance
+        autoTable(doc, {
+            head: [
+                [
+                    "S.L",
+                    "Task Name",
+                    "Assign To",
+                    "Project Name",
+                    "Module Name",
+                    "Assign Date",
+                    "Completion Date",
+                    "Priority",
+                    "Status",
+                ],
+            ],
+            body: table
+                .getFilteredRowModel()
+                .rows.map((row) => [
+                    row.index + 1,
+                    row.original.name || "",
+                    row.original.assign_user?.name || "N/A",
+                    row.original.project || "",
+                    row.original.module || "",
+                    formatDate(row.original.assign_date || ""),
+                    formatDate(row.original.completion_date || ""),
+                    row.original.priority || "",
+                    row.original.status || "",
+                ]),
+        });
+
+        doc.save("task_table.pdf");
+    };
+
+    // Function to export table to Excel
+    const exportToExcel = () => {
+        const tableData = table.getFilteredRowModel().rows.map((row) => ({
+            "S.L": row.index + 1,
+            "Task Name": row.original.name || "",
+            "Assign To": row.original.assign_user?.name || "N/A",
+            "Project Name": row.original.project || "",
+            "Module Name": row.original.module || "",
+            "Assign Date": formatDate(row.original.assign_date || ""),
+            "Completion Date": formatDate(row.original.completion_date || ""),
+            Priority: row.original.priority || "",
+            Status: row.original.status || "",
+        }));
+
+        const worksheet = XLSX.utils.json_to_sheet(tableData);
+        const workbook = XLSX.utils.book_new();
+        XLSX.utils.book_append_sheet(workbook, worksheet, "Tasks");
+        XLSX.writeFile(workbook, "task_table.xlsx"); // Use writeFile, not write_file
+    };
+
+    // Function to print table
+    const printTable = () => {
+        const printWindow = window.open("", "_blank");
+        const tableData = table
+            .getFilteredRowModel()
+            .rows.map(
+                (row) => `
+                <tr>
+                    <td>${row.index + 1}</td>
+                    <td>${row.original.name || ""}</td>
+                    <td>${row.original.assign_user?.name || "N/A"}</td>
+                    <td>${row.original.project || ""}</td>
+                    <td>${row.original.module || ""}</td>
+                    <td>${formatDate(row.original.assign_date || "")}</td>
+                    <td>${formatDate(row.original.completion_date || "")}</td>
+                    <td>${row.original.priority || ""}</td>
+                    <td>${row.original.status || ""}</td>
+                </tr>
+            `
+            )
+            .join("");
+
+        printWindow.document.write(`
+            <html>
+                <head>
+                    <title>Print Task Table</title>
+                    <style>
+                        table { width: 100%; border-collapse: collapse; }
+                        th, td { border: 1px solid #ddd; padding: 8px; text-align: left; }
+                        th { background-color: #f2f2f2; }
+                    </style>
+                </head>
+                <body>
+                    <h2>Task Table</h2>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>S.L</th>
+                                <th>Task Name</th>
+                                <th>Assign To</th>
+                                <th>Project Name</th>
+                                <th>Module Name</th>
+                                <th>Assign Date</th>
+                                <th>Completion Date</th>
+                                <th>Priority</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            ${tableData}
+                        </tbody>
+                    </table>
+                </body>
+            </html>
+        `);
+        printWindow.document.close();
+
+        // Trigger print dialog and close window after print or cancel
+        printWindow.focus();
+        printWindow.print();
+
+        // Use onafterprint to detect print dialog completion
+        printWindow.onafterprint = () => {
+            printWindow.close();
+        };
+
+        // Fallback: Close window after a delay if onafterprint is not triggered
+        setTimeout(() => {
+            if (!printWindow.closed) {
+                printWindow.close();
+            }
+        }, 1000);
+    };
+
     // Define columns for TanStack Table
     const columns = [
         {
@@ -109,23 +245,28 @@ const TaskTable = () => {
                     .includes(filterValue.toLowerCase()),
         },
         {
-            accessorKey: "assign_user",
+            accessorKey: "assigned_user",
             header: "Assign To",
-            cell: ({ getValue }) => (
-                <div className="d-flex align-items-center">
-                    <img
-                        src={
-                            getValue()?.image ??
-                            "assets/images/user-list/user-list1.png"
-                        }
-                        alt=""
-                        className="flex-shrink-0 me-12 radius-8"
-                    />
-                    <h6 className="text-md mb-0 fw-medium flex-grow-1">
-                        {getValue()?.name ?? "N/A"}
-                    </h6>
-                </div>
-            ),
+            cell: ({ getValue }) => {
+                // Log the value of getValue to the console
+                console.log("getValue:", getValue());
+
+                return (
+                    <div className="d-flex align-items-center">
+                        <img
+                            src={
+                                getValue()?.image ??
+                                "assets/images/user-list/user-list1.png"
+                            }
+                            alt="user image"
+                            className="flex-shrink-0 me-12 radius-8"
+                        />
+                        <h6 className="text-md mb-0 fw-medium flex-grow-1">
+                            {getValue()?.name ?? "N/A"}
+                        </h6>
+                    </div>
+                );
+            },
             filterFn: (row, id, filterValue) =>
                 row.original.assign_user?.name
                     ?.toLowerCase()
@@ -135,6 +276,25 @@ const TaskTable = () => {
                     rowB.original.assign_user?.name || ""
                 ),
         },
+        {
+            accessorKey: "project",
+            header: "Project Name",
+            cell: ({ getValue }) => getValue() || "",
+            filterFn: (row, id, filterValue) =>
+                row.original.project
+                    ?.toLowerCase()
+                    .includes(filterValue.toLowerCase()),
+        },
+        {
+            accessorKey: "module",
+            header: "Module Name",
+            cell: ({ getValue }) => getValue() || "",
+            filterFn: (row, id, filterValue) =>
+                row.original.module
+                    ?.toLowerCase()
+                    .includes(filterValue.toLowerCase()),
+        },
+
         {
             accessorKey: "assign_date",
             header: "Assign Date",
@@ -276,18 +436,35 @@ const TaskTable = () => {
         <div className="card basic-data-table">
             <div className="card-header d-flex justify-content-between align-items-center">
                 <h5 className="card-title mb-0">Task Data Tables</h5>
-                <div className="search-box">
-                    <input
-                        type="text"
-                        value={globalFilter || ""}
-                        onChange={(e) => setGlobalFilter(e.target.value)}
-                        placeholder="Search tasks..."
-                        className="form-control"
-                        style={{ width: "250px" }}
-                    />
+                <div className="d-flex align-items-center">
+                    <div className="search-box me-3">
+                        <input
+                            type="text"
+                            value={globalFilter || ""}
+                            onChange={(e) => setGlobalFilter(e.target.value)}
+                            placeholder="Search tasks..."
+                            className="form-control"
+                            style={{ width: "250px" }}
+                        />
+                    </div>
+                    <button
+                        className="btn btn-primary me-2"
+                        onClick={exportToPDF}
+                    >
+                        PDF
+                    </button>
+                    <button
+                        className="btn btn-success me-2"
+                        onClick={exportToExcel}
+                    >
+                        Excel
+                    </button>
+                    <button className="btn btn-info" onClick={printTable}>
+                        Print
+                    </button>
                 </div>
             </div>
-            <div className="card-body">
+            <div className="card-body table-responsive">
                 <table className="table bordered-table mb-0">
                     <thead>
                         {table.getHeaderGroups().map((headerGroup, index) => (

@@ -2,17 +2,12 @@ import Breadcrumb from "@/components/Breadcrumb";
 import MasterLayout from "@/layout/MasterLayout";
 import TaskGroupTable from "@/table/TaskGroupTable";
 
-export default function Index({ projects, modules, subModules, features }) {
+export default function Index() {
     return (
         <MasterLayout>
             {/* Breadcrumb */}
             <Breadcrumb title="Task" />
-            <TaskGroupTable
-                projects={projects}
-                modules={modules}
-                subModules={subModules}
-                features={features}
-            />
+            <TaskGroupTable />
         </MasterLayout>
     );
 }

@@ -13,6 +13,7 @@ import "datatables.net-dt/css/dataTables.dataTables.css";
 import "datatables.net-dt/js/dataTables.dataTables.js";
 import "../css/app.css";
 const appName = import.meta.env.VITE_APP_NAME || "Laravel";
+import "react-datepicker/dist/react-datepicker.css";
 
 createInertiaApp({
     title: (title) => `${title} - ${appName}`,

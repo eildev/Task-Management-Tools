@@ -22,3 +22,98 @@
 .shadow-sm {
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
+
+
+.table.bordered-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.table.bordered-table th,
+.table.bordered-table td {
+    border: 1px solid #dee2e6;
+    padding: 8px;
+    text-align: left;
+    vertical-align: middle;
+}
+
+.table.bordered-table th {
+    background-color: #f8f9fa;
+}
+
+/* Search box and buttons */
+.search-box .form-control {
+    border-radius: 4px;
+    padding: 8px;
+    font-size: 14px;
+}
+
+/* Pagination button styling */
+.btn-outline-primary {
+    border: 1px solid #007bff;
+    color: #007bff;
+    padding: 6px 12px;
+    border-radius: 4px;
+    background-color: transparent;
+}
+
+.btn-outline-primary:hover {
+    background-color: #007bff;
+    color: #fff;
+}
+
+.btn-outline-primary:disabled {
+    border-color: #6c757d;
+    color: #6c757d;
+    cursor: not-allowed;
+}
+
+/* Select styling to look like plain text */
+.header-select {
+    border: none;
+    background: transparent;
+    font-size: 16px;
+    font-weight: 600;
+    color: #333;
+    padding: 0;
+    margin: 0;
+    appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    cursor: pointer;
+}
+
+.header-select:focus {
+    outline: none;
+}
+
+/* DatePicker styling to look like plain text */
+.header-datepicker {
+    border: none;
+    background: transparent;
+    font-size: 16px;
+    font-weight: 600;
+    color: #333;
+    padding: 0;
+    margin: 0;
+    cursor: pointer;
+    width: auto;
+}
+
+.header-datepicker:focus {
+    outline: none;
+}
+
+/* Export buttons */
+.btn-primary,
+.btn-success,
+.btn-info {
+    padding: 6px 12px;
+    font-size: 14px;
+}
+
+/* Sorting indicator alignment */
+th .d-flex {
+    justify-content: space-between;
+    align-items: center;
+}

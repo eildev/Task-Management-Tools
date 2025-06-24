@@ -65,7 +65,10 @@ class TaskController extends Controller
                         'id' => $task->assignUser->id,
                         'name' => $task->assignUser->name,
                         'email' => $task->assignUser->email,
+                        'image' => $task->assignUser->image,
                     ] : null,
+                    "project" => $task->project->name,
+                    "module" => $task->module->name,
                 ];
             })->toArray();
 
