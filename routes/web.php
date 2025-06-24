@@ -36,7 +36,7 @@ Route::middleware('auth')->group(function () {
         Route::get('/tasks/{task}', 'show')->name('tasks.show');
         Route::get('/tasks/edit/{task}', 'edit')->name('tasks.edit');
         Route::post('/task/update/{id}', 'update')->name('tasks.update');
-        Route::delete('/tasks/{task}', 'destroy')->name('tasks.destroy');
+        Route::delete('/tasks/delete/{task}', 'destroy')->name('tasks.destroy');
         Route::patch('/tasks/{id}/status', 'updateTaskStatus')->name('tasks.status.update');
     });
     Route::controller(TaskGroupController::class)->group(function () {

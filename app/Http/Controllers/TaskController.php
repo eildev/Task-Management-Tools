@@ -214,6 +214,7 @@ class TaskController extends Controller
 
     public function update(Request $request, $id)
     {
+        // dd($request->all());
         $validated = $request->validate([
             'name' => 'required|string|max:255',
             'description' => 'required|string|max:1000',
@@ -276,6 +277,11 @@ class TaskController extends Controller
     public function destroy($id)
     {
         $task = Task::find($id);
+
+        if ($task->attachment && Storage::disk('public')->exists($task->attachment)) {
+            Storage::disk('public')->delete($task->attachment);
+        }
+
         $task->delete();
         return response()->json([
             'success' => true,

@@ -7,7 +7,25 @@ const TaskDetailsPage = () => {
     const { props } = usePage();
     const task = props.tasks;
 
-    console.log(task);
+    // console.log(task);
+
+    const getFileType = (filePath) => {
+        if (!filePath) return null;
+        const extension = filePath.split(".").pop()?.toLowerCase();
+        if (["jpg", "jpeg", "png"].includes(extension)) return "image";
+        if (extension === "pdf") return "pdf";
+        if (["doc", "docx"].includes(extension)) return "word";
+        if (["xls", "xlsx"].includes(extension)) return "excel";
+        return "unknown";
+    };
+
+    const fileTypeIcons = {
+        image: "bi:file-earmark-image",
+        pdf: "bi:file-earmark-pdf",
+        word: "bi:file-earmark-word",
+        excel: "bi:file-earmark-excel",
+        unknown: "bi:file-earmark",
+    };
 
     const statusStyles = {
         pending: { bg: "bg-warning-focus", text: "text-warning-main" },
@@ -130,15 +148,37 @@ const TaskDetailsPage = () => {
                             </h6>
                             {task.attachment ? (
                                 <div className="text-center">
-                                    <img
-                                        src={`/${task.attachment}`}
-                                        alt="Attachment"
-                                        className="img-fluid rounded-8 mb-3"
-                                        style={{
-                                            maxHeight: "300px",
-                                            objectFit: "cover",
-                                        }}
-                                    />
+                                    {getFileType(task.attachment) ===
+                                    "image" ? (
+                                        <img
+                                            src={`/${task.attachment}`}
+                                            alt="Attachment"
+                                            className="img-fluid rounded-8 mb-3"
+                                            style={{
+                                                maxHeight: "300px",
+                                                objectFit: "cover",
+                                            }}
+                                        />
+                                    ) : (
+                                        <div className="d-flex flex-column align-items-center mb-3">
+                                            <Icon
+                                                icon={
+                                                    fileTypeIcons[
+                                                        getFileType(
+                                                            task.attachment
+                                                        )
+                                                    ] || fileTypeIcons.unknown
+                                                }
+                                                width="48"
+                                                className="text-primary mb-2"
+                                            />
+                                            <span className="text-secondary">
+                                                {task.attachment
+                                                    .split("/")
+                                                    .pop()}
+                                            </span>
+                                        </div>
+                                    )}
                                     <a
                                         href={`/${task.attachment}`}
                                         download

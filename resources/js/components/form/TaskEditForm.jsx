@@ -16,7 +16,7 @@ const TaskEditForm = ({ task, taskGroups: initialTaskGroups, users }) => {
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [attachmentPreview, setAttachmentPreview] = useState(
         typeof task?.attachment === "string" && task.attachment
-            ? `/storage/${task.attachment}`
+            ? { type: "image", url: `/${task.attachment}` }
             : null
     );
 
@@ -32,7 +32,7 @@ const TaskEditForm = ({ task, taskGroups: initialTaskGroups, users }) => {
         assign_to: task?.assign_to?.toString() || "",
         completion_date: task?.completion_date || "",
         description: task?.description || "",
-        notes: task?.remarks || "",
+        remarks: task?.remarks || "",
         attachment: null,
         status: task?.status || "",
         priority: task?.priority || "",
@@ -93,6 +93,7 @@ const TaskEditForm = ({ task, taskGroups: initialTaskGroups, users }) => {
 
     const allowedTypes = [
         "image/jpeg",
+        "image/jpg",
         "image/png",
         "application/pdf",
         "application/msword",
@@ -154,8 +155,19 @@ const TaskEditForm = ({ task, taskGroups: initialTaskGroups, users }) => {
         setIsSubmitting(true);
         const form = new FormData();
         Object.keys(formData).forEach((key) => {
-            if (formData[key] !== null && formData[key] !== "") {
-                form.append(key, formData[key]);
+            if (
+                [
+                    "submodule_id",
+                    "feature_id",
+                    "remarks",
+                    "assign_date",
+                    "assign_to",
+                    "deadline",
+                    "completion_date",
+                ].includes(key) ||
+                (formData[key] !== null && formData[key] !== "")
+            ) {
+                form.append(key, formData[key] || "");
             }
         });
 
@@ -169,8 +181,9 @@ const TaskEditForm = ({ task, taskGroups: initialTaskGroups, users }) => {
                 },
             });
             toast.success(response.data.message);
-            window.location.href = "/tasks";
+            window.location.href = "/task-manage";
         } catch (error) {
+            console.log(error);
             if (error.response?.status === 422) {
                 const serverErrors = error.response.data.errors;
                 setErrors(serverErrors);
@@ -195,6 +208,8 @@ const TaskEditForm = ({ task, taskGroups: initialTaskGroups, users }) => {
     const handleTaskGroupAdded = (newTaskGroup) => {
         setTaskGroups((prev) => [...prev, newTaskGroup]);
     };
+
+    // console.log(attachmentPreview.type);
 
     return (
         <div className="col-md-12">
@@ -448,12 +463,12 @@ const TaskEditForm = ({ task, taskGroups: initialTaskGroups, users }) => {
                                 rows={4}
                                 cols={50}
                                 placeholder="Enter a remarks"
-                                value={formData.notes}
+                                value={formData.remarks}
                                 onChange={handleInputChange}
                             />
-                            {errors.notes && (
+                            {errors.remarks && (
                                 <div className="text-danger">
-                                    {errors.notes}
+                                    {errors.remarks}
                                 </div>
                             )}
                         </div>
@@ -481,15 +496,9 @@ const TaskEditForm = ({ task, taskGroups: initialTaskGroups, users }) => {
                                         overflow: "hidden",
                                     }}
                                 >
-                                    {typeof attachmentPreview === "string" &&
-                                    (attachmentPreview.startsWith(
-                                        "/storage/"
-                                    ) ||
-                                        attachmentPreview.startsWith(
-                                            "data:image"
-                                        )) ? (
+                                    {attachmentPreview.type === "image" ? (
                                         <img
-                                            src={attachmentPreview}
+                                            src={attachmentPreview.url}
                                             alt="Attachment Preview"
                                             style={{
                                                 width: "100%",
@@ -500,17 +509,16 @@ const TaskEditForm = ({ task, taskGroups: initialTaskGroups, users }) => {
                                     ) : (
                                         <div className="d-flex align-items-center">
                                             <Icon
-                                                icon="bi:file-earmark-text"
+                                                icon={
+                                                    attachmentPreview.icon ||
+                                                    "bi:file-earmark-text"
+                                                }
                                                 width="24"
                                                 className="me-2 text-danger"
                                             />
                                             <span>
-                                                {typeof attachmentPreview ===
-                                                "string"
-                                                    ? attachmentPreview
-                                                          .split("/")
-                                                          .pop()
-                                                    : "Unknown file"}
+                                                {attachmentPreview.name ||
+                                                    "Unknown file"}
                                             </span>
                                         </div>
                                     )}
@@ -524,7 +532,7 @@ const TaskEditForm = ({ task, taskGroups: initialTaskGroups, users }) => {
                                     }}
                                 >
                                     <img
-                                        src={`/storage/${task.attachment}`}
+                                        src={`/${task.attachment}`}
                                         alt="Current Attachment"
                                         style={{
                                             width: "100%",
