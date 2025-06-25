@@ -117,3 +117,27 @@ th .d-flex {
     justify-content: space-between;
     align-items: center;
 }
+
+
+.filter-options select,
+.filter-options input {
+    font-size: 12px;
+    padding: 4px;
+    border-radius: 4px;
+}
+
+.card-header {
+    padding: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.btn-sm {
+    padding: 4px 8px;
+    font-size: 12px;
+}
+
+.search-box input {
+    font-size: 14px;
+    padding: 4px 8px;
+}

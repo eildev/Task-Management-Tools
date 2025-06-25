@@ -27,6 +27,11 @@ class TaskController extends Controller
             $user = Auth::user();
             $isAdmin = $user->role === 'admin' || $user->role === 'superadmin';
 
+
+            // Fetch task groups and users
+            $taskGroups = TaskGroup::all(); // Assuming TaskGroup model exists
+            $users = User::select('id', 'name')->get();
+
             // Build the query
             $query = Task::with(['assignUser' => function ($query) {
                 $query->select('id', 'name', 'email'); // Optimize by selecting only needed fields
@@ -74,6 +79,10 @@ class TaskController extends Controller
 
             return Inertia::render('Task/TaskManage', [
                 'data' => $data,
+                'isAdmin' => $isAdmin,
+                'user' => $user,
+                'taskGroups' => $taskGroups,
+                'users' => $users,
             ]);
         } catch (\Exception $e) {
             Log::error('Error fetching tasks: ' . $e->getMessage());

@@ -7,6 +7,7 @@ use Inertia\Inertia;
 use App\Models\User;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Storage;
 
 class UserController extends Controller
 {
@@ -15,7 +16,6 @@ class UserController extends Controller
 
         if (Auth::user()->role === 'admin' | Auth::user()->role === 'superadmin') {
             $users = User::all();
-            // dd($users);
             return Inertia::render('User/Index', ['users' => $users]);
         } else {
             $users = User::where('created_by', Auth::user()->id)->get();
@@ -60,10 +60,20 @@ class UserController extends Controller
         return to_route('users.index');
     }
 
-    public function edit($user_id)
+    public function edit($id)
     {
-        $user = User::findOrFail($user_id);
-        return Inertia::render('User/Edit', ['user' => $user]);
+        $user = User::findOrFail($id);
+        return Inertia::render('User/Edit', [
+            'user' => [
+                'id' => $user->id,
+                'name' => $user->name,
+                'email' => $user->email,
+                'phone' => $user->phone,
+                'bio_data' => $user->bio_data,
+                'role' => $user->role,
+                'image' => $user->image ? Storage::url($user->image) : null,
+            ],
+        ]);
     }
 
     public function update(Request $request, $user_id)

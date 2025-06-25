@@ -7,6 +7,7 @@ import toast from "react-hot-toast";
 import "../css/MainForm.css";
 import { handleAttachmentChange } from "@/utils/handleAttachment";
 import { Icon } from "@iconify/react";
+import { Link } from "@inertiajs/react";
 
 const MainForm = ({ taskGroups: initialTaskGroups, users }) => {
     const [taskGroups, setTaskGroups] = useState(initialTaskGroups || []);
@@ -205,8 +206,18 @@ const MainForm = ({ taskGroups: initialTaskGroups, users }) => {
     return (
         <div className="col-md-12">
             <div className="card">
-                <div className="card-header">
+                <div className="card-header d-flex justify-content-between align-items-center">
                     <h6 className="card-title mb-0">Create Task</h6>
+                    <div>
+                        <Link
+                            href="/task-manage"
+                            title="View Task"
+                            type="button"
+                            className="w-32-px h-32-px me-8 bg-primary text-white rounded-circle d-inline-flex align-items-center justify-content-center"
+                        >
+                            <Icon icon="iconamoon:eye-thin" />
+                        </Link>
+                    </div>
                 </div>
                 <div className="card-body">
                     <form className="row gy-3" onSubmit={handleSubmit}>

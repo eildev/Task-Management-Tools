@@ -75,7 +75,7 @@ Route::middleware('auth')->group(function () {
         Route::get('/users/{user}', 'show')->name('users.show');
         Route::get('/users/{user}/edit', 'edit')->name('users.edit');
         Route::put('/users/{user}', 'update')->name('users.update');
-        Route::get('/users/{user_id}/delete', 'destroy')->name('users.destroy');
+        Route::delete('/users/{user_id}/delete', 'destroy')->name('users.destroy');
     });
 });
 

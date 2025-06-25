@@ -1,77 +1,122 @@
-import React from 'react';
-import { Link } from '@inertiajs/react';
+import DynamicTable from "@/table/DynamicTable";
+import { Icon } from "@iconify/react";
+import { Link } from "@inertiajs/react";
+import Swal from "sweetalert2";
+import toast from "react-hot-toast";
 
 const UserTable = ({ users }) => {
+    const userColumns = [
+        {
+            accessorKey: "id",
+            header: "SL",
+            cell: ({ row, table }) => {
+                // Calculate the index based on the current page and row position
+                const pageIndex = table.getState().pagination.pageIndex;
+                const pageSize = table.getState().pagination.pageSize;
+                const rowIndex = row.index;
+                return pageIndex * pageSize + rowIndex + 1;
+            },
+            enableSorting: false,
+        },
+        {
+            accessorKey: "name",
+            header: "Name",
+            cell: ({ row }) => row.original.name || "",
+            enableSorting: true,
+            filterType: "text",
+        },
+        {
+            accessorKey: "email",
+            header: "Email",
+            cell: ({ row }) => row.original.email || "",
+            enableSorting: true,
+            filterType: "text",
+        },
+        {
+            accessorKey: "role",
+            header: "Role",
+            cell: ({ row }) => {
+                const role = row.original.role;
+                return (
+                    <span
+                        className={`inline-block px-3 py-1 rounded-full text-xs font-semibold ${
+                            role === "superadmin"
+                                ? "bg-purple-100 text-purple-700"
+                                : role === "admin"
+                                ? "bg-blue-100 text-blue-700"
+                                : "bg-green-100 text-green-700"
+                        }`}
+                    >
+                        {role}
+                    </span>
+                );
+            },
+            enableSorting: true,
+            filterType: "select",
+            options: [
+                { value: "superadmin", label: "Superadmin" },
+                { value: "admin", label: "Admin" },
+                { value: "user", label: "User" },
+            ],
+        },
+        {
+            accessorKey: "id",
+            header: "Actions",
+            cell: ({ row }) => (
+                <div className="text-center space-x-2">
+                    <Link
+                        className="w-32-px h-32-px me-8 bg-primary-light text-primary-600 rounded-circle d-inline-flex align-items-center justify-content-center"
+                        href={`/users/${row.original.id}/edit`}
+                    >
+                        <Icon icon="lucide:edit" />
+                    </Link>
+                    <Link
+                        className="w-32-px h-32-px me-8 bg-danger-focus text-danger-main rounded-circle d-inline-flex align-items-center justify-content-center"
+                        href={`/users/${row.original.id}/delete`}
+                        method="delete"
+                        as="button"
+                    >
+                        <Icon icon="mingcute:delete-2-line" />
+                    </Link>
+                </div>
+            ),
+            enableSorting: false,
+        },
+    ];
+
+    const userFilters = [
+        {
+            accessorKey: "name",
+            label: "Name",
+            type: "text",
+        },
+        {
+            accessorKey: "email",
+            label: "Email",
+            type: "text",
+        },
+        {
+            accessorKey: "role",
+            label: "Role",
+            type: "select",
+            options: [
+                { value: "superadmin", label: "Superadmin" },
+                { value: "admin", label: "Admin" },
+                { value: "user", label: "User" },
+            ],
+        },
+    ];
+
     return (
-        <div className="bg-white shadow-lg rounded-xl p-6 sm:p-8 overflow-hidden">
-            {/* Header */}
-            <div className="flex items-center justify-between mb-6">
-                <h2 className="text-2xl font-bold text-gray-800">User List</h2>
-                <Link
-                    href="/users/create"
-                    className="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-5 rounded-lg shadow-sm transition"
-                >
-                    + Add User
-                </Link>
-            </div>
-
-            {/* Table */}
-            <div className="overflow-x-auto">
-                <table className="min-w-full divide-y divide-gray-200 text-sm text-left">
-                    <thead className="bg-gray-100 text-gray-600 uppercase tracking-wide text-xs">
-                        <tr>
-                            <th className="px-5 py-3">#</th>
-                            <th className="px-5 py-3">Name</th>
-                            <th className="px-5 py-3">Email</th>
-                            <th className="px-5 py-3">Role</th>
-                            <th className="px-5 py-3 text-center">Actions</th>
-                        </tr>
-                    </thead>
-                    <tbody className="divide-y divide-gray-200 text-gray-800">
-                        {users && users.length > 0 ? (
-                            users.map((user, index) => (
-                                <tr key={user.id} className="hover:bg-gray-50">
-                                    <td className="px-5 py-3 font-medium">{index + 1}</td>
-                                    <td className="px-5 py-3">{user.name}</td>
-                                    <td className="px-5 py-3">{user.email}</td>
-                                    <td className="px-5 py-3">
-                                        <span className={`inline-block px-3 py-1 rounded-full text-xs font-semibold ${
-                                            user.role === 'superadmin'
-                                                ? 'bg-purple-100 text-purple-700'
-                                                : user.role === 'admin'
-                                                ? 'bg-blue-100 text-blue-700'
-                                                : 'bg-green-100 text-green-700'
-                                        }`}>
-                                            {user.role}
-                                        </span>
-                                    </td>
-                                    <td className="px-5 py-3 text-center space-x-2">
-                                    <Link
-                                        className="inline-flex items-center gap-1 bg-indigo-100 text-indigo-700 hover:bg-indigo-200 px-3 py-1 rounded-full text-sm font-medium transition"
-                                         href={`/users/${user.id}/edit`}
-                                     >
-                                        ✏️ Edit
-                                    </Link>
-                                    <Link
-                                        className="inline-flex items-center gap-1 bg-red-100 text-red-700 hover:bg-red-200 px-3 py-1 rounded-full text-sm font-medium transition"
-                                        href={`/users/${user.id}/delete`}
-                                    >
-                                        🗑️ Delete
-                                    </Link>
-                                </td>
-
-                                </tr>
-                            ))
-                        ) : (
-                            <tr>
-                                <td colSpan="5" className="text-center py-6 text-gray-500">
-                                    No users found.
-                                </td>
-                            </tr>
-                        )}
-                    </tbody>
-                </table>
-            </div>
+        <div>
+            <DynamicTable
+                data={users}
+                columns={userColumns}
+                filters={userFilters}
+                exportOptions={{ pdf: true, excel: true, print: true }}
+                title="User List"
+                addLink="/users/create"
+            />
         </div>
     );
 };

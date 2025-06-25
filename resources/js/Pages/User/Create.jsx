@@ -1,28 +1,20 @@
-import React from 'react';
+import React from "react";
 
-import MasterLayout from '@/layout/MasterLayout';
-import Breadcrumb from '@/components/Breadcrumb';
+import MasterLayout from "@/layout/MasterLayout";
+import Breadcrumb from "@/components/Breadcrumb";
+import CreateForm from "./CreateForm";
+import "react-toastify/dist/ReactToastify.css";
 
-import CreateForm from './CreateForm';
-
-import 'react-toastify/dist/ReactToastify.css';
-
-const UserCreate=()=>{
-
-
-    return(
+const UserCreate = () => {
+    return (
         <>
             <MasterLayout>
                 <Breadcrumb title="User Create" />
 
-                 <CreateForm></CreateForm>
-
-
-                </MasterLayout>
-
+                <CreateForm></CreateForm>
+            </MasterLayout>
         </>
-    )
-
-}
+    );
+};
 
 export default UserCreate;

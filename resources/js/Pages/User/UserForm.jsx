@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useForm } from "@inertiajs/react";
 import InputError from "@/Components/InputError";
 import InputLabel from "@/Components/InputLabel";
@@ -8,20 +8,39 @@ import "react-toastify/dist/ReactToastify.css";
 import { Icon } from "@iconify/react";
 import toast from "react-hot-toast";
 
-const CreateForm = () => {
+const UserForm = ({ user = null }) => {
     const [passwordVisible, setPasswordVisible] = useState(false);
     const [confirmPasswordVisible, setConfirmPasswordVisible] = useState(false);
 
-    const { data, setData, post, processing, errors, reset } = useForm({
-        name: "",
-        email: "",
-        phone: "",
-        image: null,
-        bio_data: "",
+    // Initialize form with user data for edit mode or empty for create mode
+    const { data, setData, post, put, processing, errors, reset } = useForm({
+        name: user?.name || "",
+        email: user?.email || "",
+        phone: user?.phone || "",
+        image: user?.image || null, // Server-provided image URL or null
+        bio_data: user?.bio_data || "",
         password: "",
         password_confirmation: "",
-        role: "",
+        role: user?.role || "",
+        _method: user ? "PUT" : "POST", // For Laravel method spoofing
     });
+
+    // Set initial data for edit mode
+    useEffect(() => {
+        if (user) {
+            setData({
+                name: user.name || "",
+                email: user.email || "",
+                phone: user.phone || "",
+                image: user.image || null,
+                bio_data: user.bio_data || "",
+                password: "",
+                password_confirmation: "",
+                role: user.role || "",
+                _method: "PUT",
+            });
+        }
+    }, [user]);
 
     const togglePasswordVisibility = () => setPasswordVisible(!passwordVisible);
     const toggleConfirmPasswordVisibility = () =>
@@ -37,15 +56,37 @@ const CreateForm = () => {
     const submit = (e) => {
         e.preventDefault();
 
-        post(route("users.store"), {
+        const routeName = user ? "users.update" : "users.store";
+        const method = user ? put : post;
+        const routeParams = user ? { id: user.id } : {};
+
+        method(route(routeName, routeParams), {
+            preserveScroll: true,
             onSuccess: () => {
-                console.log(data);
-                toast.success("User created successfully!");
+                toast.success(
+                    user
+                        ? "User updated successfully!"
+                        : "User created successfully!"
+                );
+                if (!user) {
+                    reset(); // Reset form only for create mode
+                }
             },
             onError: () => {
                 toast.error("Please check the form for errors.");
             },
         });
+    };
+
+    // Determine image URL for preview
+    const getImageUrl = () => {
+        if (data.image instanceof File) {
+            return URL.createObjectURL(data.image);
+        }
+        if (typeof data.image === "string" && data.image) {
+            return data.image; // Server-provided image URL
+        }
+        return "/assets/images/user-grid/user-grid-img14.png"; // Fallback image
     };
 
     return (
@@ -56,7 +97,7 @@ const CreateForm = () => {
                         <div className="card border">
                             <div className="card-header">
                                 <h6 className="text-md text-primary-light mb-16 font-semibold">
-                                    Create User
+                                    {user ? "Edit User" : "Create User"}
                                 </h6>
                             </div>
                             <div className="card-body">
@@ -90,14 +131,7 @@ const CreateForm = () => {
                                                 <div
                                                     id="imagePreview"
                                                     style={{
-                                                        backgroundImage: `url(${
-                                                            data.image instanceof
-                                                            File
-                                                                ? URL.createObjectURL(
-                                                                      data.image
-                                                                  )
-                                                                : "/assets/images/user-grid/user-grid-img14.png"
-                                                        })`,
+                                                        backgroundImage: `url(${getImageUrl()})`,
                                                     }}
                                                 ></div>
                                             </div>
@@ -338,15 +372,13 @@ const CreateForm = () => {
                                         </div>
                                     </div>
 
-                                    {/* Hidden role (you can change this if needed) */}
-
                                     {/* Submit */}
                                     <div className="flex items-center justify-center">
                                         <button
                                             className="w-full px-6 py-3 text-center text-lg bg-blue-600 text-white rounded-md hover:bg-blue-700 disabled:opacity-70 disabled:cursor-not-allowed"
                                             disabled={processing}
                                         >
-                                            Save
+                                            {user ? "Update" : "Save"}
                                         </button>
                                     </div>
                                 </form>
@@ -359,4 +391,4 @@ const CreateForm = () => {
     );
 };
 
-export default CreateForm;
+export default UserForm;
