@@ -7,7 +7,7 @@ export default defineConfig({
     plugins: [
         laravel({
             input: 'resources/js/app.jsx',
-            refresh: true,
+            refresh: process.env.APP_ENV === 'production' ? false : true, // প্রোডাকশনে refresh অক্ষম
         }),
         react(),
     ],

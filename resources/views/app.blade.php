@@ -40,9 +40,8 @@
     <link rel="stylesheet" href="{{ asset('assets/css/style.css') }}">
     <link rel="stylesheet" href="{{ asset('assets/css/extra.css') }}">
 
-    <title inertia>Task Management Tool</title>
-    @viteReactRefresh
-    @vite(['resources/js/app.jsx', "resources/js/Pages/{$page['component']}.jsx"])
+    <title>Task Management Tool</title>
+    @vite(['resources/js/app.jsx'])
     @inertiaHead
     @routes
 </head>
